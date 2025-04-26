@@ -105,11 +105,13 @@ const Home = () => {
 
   return (
     <div className="home-page">
+
+    <div className='hero-content-2'>
       <section className="hero-section" style={{backgroundColor: 'white'}}>
         <div className="hero-content">
           <div className="hero-text">
             <h1>{homeData.title}</h1>
-            <p>{homeData.description}</p>
+            <p className='hero-text-description'>{homeData.description}</p>
             {!user && (
               <button onClick={handleGoogleSignIn} className="google-signin">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" alt="Google" />
@@ -117,11 +119,9 @@ const Home = () => {
               </button>
             )}
           </div>
-          <div className="hero-image">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" alt="Students studying" />
-          </div>
         </div>
       </section>
+    </div>
 
       <div className="home-content-grid">
         {user && (
@@ -135,7 +135,7 @@ const Home = () => {
                   return session.participants.some(p => p.uid === user.uid) && sessionDate > now;
                 })
                 .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
-                .slice(0, 2)
+                .slice(0, 3)
                 .map(session => (
                   <div key={session.id} className="home-session-card">
                     <div className="home-session-info">

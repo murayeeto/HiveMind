@@ -63,7 +63,7 @@ const SetView = () => {
   };
 
   const handlePrevCard = () => {
-    setCurrentCardIndex((prev) => 
+    setCurrentCardIndex((prev) =>
       prev === 0 ? cards.length - 1 : prev - 1
     );
     setIsCardFlipped(false);
@@ -110,15 +110,15 @@ const SetView = () => {
               <span>{currentCardIndex + 1} / {cards.length}</span>
               <button onClick={handleNextCard}>→</button>
             </div>
-            <div 
-              className={`card ${isCardFlipped ? 'flipped' : ''}`}
+            <div
+              className={`featured-card-content ${isCardFlipped ? 'flipped' : ''}`}
               onClick={handleCardFlip}
             >
-              <div className="card-front">
+              <div className="featured-side front">
                 <h3>Front</h3>
                 <p>{cards[currentCardIndex].question}</p>
               </div>
-              <div className="card-back">
+              <div className="featured-side back">
                 <h3>Back</h3>
                 <p>{cards[currentCardIndex].answer}</p>
               </div>
