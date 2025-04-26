@@ -14,7 +14,8 @@ import Calendar from './pages/Calendar';
 import Faq from './pages/Faq';
 import Account from './pages/Account';
 import StudyWithBuddy from './pages/StudyWithBuddy';
-import Pricing from './pages/Pricing';
+import Pricing from './pages/Pricing'
+import StudyPage from './pages/StudyPage'
 import Study from './pages/Study';
 
 
@@ -76,6 +77,12 @@ function App() {
                   <PrivateRoute>
                     <Account />
                   </PrivateRoute>
+                }
+              />
+              <Route
+                path="/studysets"
+                element={
+                  <StudyPage />
                 }
               />
               <Route
