@@ -3,7 +3,8 @@
     "http://localhost:4000",
     "https://localhost:4000",
     "https://hornethelper-36e05.firebaseapp.com",
-    "https://hornethelper-36e05.web.app"
+    "https://hornethelper-36e05.web.app",
+    "http://localhost:4000/#/account"
   ],
   "method": ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
   "maxAgeSeconds": 3600,

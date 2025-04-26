@@ -8,7 +8,8 @@
 
 /* Container */
 .calendar-container {
-  max-width: 95vw;
+  max-width: 1200px;
+  width: 95vw;
   margin: 0 auto;
 }
 
@@ -54,9 +55,10 @@
 
 .days-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
   gap: 8px;
   padding: 1rem;
+  margin: 0 auto;
 }
 
 .day-name {
@@ -68,7 +70,7 @@
 }
 
 .day-cell {
-  aspect-ratio: 1;
+  aspect-ratio: 1/1;
   background-color: #252525;
   border-radius: 8px;
   padding: 0.5rem;
@@ -76,6 +78,8 @@
   cursor: pointer;
   transition: all 0.2s;
   min-height: 120px;
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 .day-cell:hover {
@@ -110,6 +114,8 @@
   flex-direction: column;
   gap: 4px;
   margin-top: 0.5rem;
+  max-height: calc(100% - 2rem);
+  overflow-y: auto;
 }
 
 .event-preview {
@@ -280,15 +286,34 @@
 
 @media (max-width: 768px) {
   .calendar-container {
-    padding: 1rem;
+    padding: 0.5rem;
+    width: 100vw;
   }
   
+  .days-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 0.5rem;
+  }
+
   .day-cell {
-    min-height: 100px;
+    min-height: 80px;
+    max-height: 120px;
+    padding: 0.25rem;
   }
   
   .time-label {
     font-size: 0.8rem;
+  }
+
+  .event-preview {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+
+  .date-number {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
   }
 }
 
