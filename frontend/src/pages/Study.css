@@ -1,0 +1,261 @@
+.study-container {
+  padding: 2rem;
+}
+
+.study-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.create-group-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.create-group-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.create-group-form button {
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.group-section {
+  margin-bottom: 2rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.group-header {
+  padding: 1rem 2rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.group-title {
+  font-size: 1.5rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.group-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.study-mode-btn {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-group-btn {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.minimize-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+}
+
+.minimize-btn .icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.minimize-btn .icon.rotated {
+  transform: rotate(180deg);
+}
+
+.group-content {
+  padding: 2rem;
+}
+
+.group-content.minimized {
+  display: none;
+}
+
+.featured-card {
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cards-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.cards-list {
+  display: grid;
+  gap: 2rem;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.card-side {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Study mode */
+.study-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.study-card {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.study-card-front,
+.study-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-size: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  transition: opacity 0.3s;
+}
+
+.study-card-back {
+  opacity: 0;
+}
+
+.study-card.flipped .study-card-front {
+  opacity: 0;
+}
+
+.study-card.flipped .study-card-back {
+  opacity: 1;
+}
+
+.study-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.study-nav-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.study-shuffle-btn {
+  background: #dc3545;
+}
+
+.study-counter {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 1rem;
+}
+
+.study-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.error {
+  color: #dc3545;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.loading {
+  text-align: center;
+  margin: 2rem 0;
+}
