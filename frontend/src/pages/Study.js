@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { collection, addDoc, getDocs, deleteDoc, doc, query, where, updateDoc } from 'firebase/firestore';
+import { FaPlus } from 'react-icons/fa';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import './Study.css';
@@ -8,7 +10,6 @@ const Study = () => {
   const [groups, setGroups] = useState([]);
   const [newGroupName, setNewGroupName] = useState('');
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [minimizedGroups, setMinimizedGroups] = useState(new Set());
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(true);
@@ -17,8 +18,11 @@ const Study = () => {
   const [currentGroupId, setCurrentGroupId] = useState(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [studyCards, setStudyCards] = useState([]);
-  const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [userAnswer, setUserAnswer] = useState('');
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [results, setResults] = useState([]);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -165,203 +169,271 @@ const Study = () => {
     }
   };
 
-  const startStudyMode = (groupId) => {
+  const startStudyMode = async (groupId) => {
     const group = groups.find(g => g.id === groupId);
     if (group) {
-      setStudyCards([...group.flashcards]);
+      const shuffled = [...group.flashcards].sort(() => Math.random() - 0.5);
+      setStudyCards(shuffled);
       setCurrentGroupId(groupId);
       setCurrentCardIndex(0);
       setStudyMode(true);
-      setIsCardFlipped(false);
+      setShowAnswer(false);
+      setUserAnswer('');
+      setResults([]);
     }
   };
 
-  const exitStudyMode = () => {
+  const exitStudyMode = async () => {
+    if (results.length > 0) {
+      const correctCount = results.filter(r => r.correct).length;
+      const newAccuracy = (correctCount / results.length) * 100;
+      
+      // Update group with new accuracy
+      const groupsRef = collection(firebase.db, 'flashcard_groups');
+      await updateDoc(doc(groupsRef, currentGroupId), {
+        lastAccuracy: newAccuracy,
+        lastStudied: new Date().toISOString()
+      });
+
+      // Update local state
+      setGroups(groups.map(group => {
+        if (group.id === currentGroupId) {
+          return { ...group, lastAccuracy: newAccuracy };
+        }
+        return group;
+      }));
+    }
+
     setStudyMode(false);
     setCurrentGroupId(null);
     setStudyCards([]);
     setCurrentCardIndex(0);
-    setIsCardFlipped(false);
+    setShowAnswer(false);
+    setUserAnswer('');
+    setResults([]);
+  };
+
+  const checkAnswer = () => {
+    const currentCard = studyCards[currentCardIndex];
+    const isCorrect = userAnswer.toLowerCase() === currentCard.answer.toLowerCase();
+    
+    setResults([...results, {
+      cardId: currentCard.id,
+      correct: isCorrect,
+      userAnswer,
+      correctAnswer: currentCard.answer
+    }]);
+
+    setShowAnswer(true);
+  };
+
+  const skipCard = () => {
+    const currentCard = studyCards[currentCardIndex];
+    setResults([...results, {
+      cardId: currentCard.id,
+      correct: false,
+      skipped: true,
+      userAnswer: '',
+      correctAnswer: currentCard.answer
+    }]);
+    setShowAnswer(true);
   };
 
   const nextCard = () => {
-    setCurrentCardIndex((prev) => (prev + 1) % studyCards.length);
-    setIsCardFlipped(false);
-  };
-
-  const prevCard = () => {
-    setCurrentCardIndex((prev) => 
-      prev === 0 ? studyCards.length - 1 : prev - 1
-    );
-    setIsCardFlipped(false);
-  };
-
-  const shuffleCards = () => {
-    setStudyCards(cards => {
-      const shuffled = [...cards];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      setCurrentCardIndex(0);
-      setIsCardFlipped(false);
-      return shuffled;
-    });
+    if (currentCardIndex < studyCards.length - 1) {
+      setCurrentCardIndex(prev => prev + 1);
+      setShowAnswer(false);
+      setUserAnswer('');
+    } else {
+      exitStudyMode();
+    }
   };
 
   if (loading) {
     return <div className="loading">Loading flashcards...</div>;
   }
 
+  // Get 2 most recently studied sets
+  const recentGroups = groups
+    .filter(group => group.flashcards.length > 0)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 2);
+
   return (
-    <div className="study-container">
-      <div className="study-header">
-        <h1>Study with Flashcards</h1>
-        <p>Create groups and add flashcards to study</p>
-      </div>
-
-      <form className="create-group-form" onSubmit={createGroup}>
-        <input
-          type="text"
-          placeholder="Enter group name"
-          value={newGroupName}
-          onChange={(e) => setNewGroupName(e.target.value)}
-        />
-        <button type="submit">Create Group</button>
-      </form>
-
-      {error && <div className="error">{error}</div>}
-
-      {groups.map(group => (
-        <div key={group.id} className="group-section">
-          <div className="group-header">
-            <h2 className="group-title">
+    <div className="study-page">
+      <h1 className="page-title">Your Study Hub</h1>
+      
+      <div className="dashboard-container">
+        <div className="dashboard-box">
+          <h2>Study Sets</h2>
+          {selectedGroup !== 'new' ? (
+            <>
               <button
-                className="minimize-btn"
-                onClick={() => {
-                  setMinimizedGroups(prev => {
-                    const newSet = new Set(prev);
-                    if (newSet.has(group.id)) {
-                      newSet.delete(group.id);
-                    } else {
-                      newSet.add(group.id);
-                    }
-                    return newSet;
-                  });
-                }}
+                className="big-button create-button"
+                onClick={() => setSelectedGroup('new')}
               >
-                <span className={`icon ${minimizedGroups.has(group.id) ? 'rotated' : ''}`}>▼</span>
-              </button>
-              {group.name}
-            </h2>
-            <div className="group-buttons">
-              <button
-                className="study-mode-btn"
-                onClick={() => startStudyMode(group.id)}
-              >
-                Study
+                <FaPlus className="plus-icon" />
+                Create New
               </button>
               <button
-                className={`select-group-btn ${selectedGroup === group.id ? 'active' : ''}`}
-                onClick={() => setSelectedGroup(prev => prev === group.id ? null : group.id)}
+                className="big-button your-sets-button"
+                onClick={() => navigate('/your-sets')}
               >
-                {selectedGroup === group.id ? 'Selected' : 'Select to Add Cards'}
+                Your Sets
               </button>
-              <button
-                className="delete-group-btn"
-                onClick={() => deleteGroup(group.id)}
-              >
-                Delete Group
-              </button>
-            </div>
-          </div>
+            </>
+          ) : (
+            <form className="create-set-form" onSubmit={(e) => {
+              createGroup(e);
+              setSelectedGroup(null);
+            }}>
+              <input
+                type="text"
+                placeholder="Enter set name"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+                autoFocus
+              />
+              <div className="form-buttons">
+                <button type="submit" className="confirm-btn">Create</button>
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => {
+                    setSelectedGroup(null);
+                    setNewGroupName('');
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
 
-          <div className={`group-content ${minimizedGroups.has(group.id) ? 'minimized' : ''}`}>
-            {selectedGroup === group.id && (
-              <form className="create-flashcard-form" onSubmit={createFlashcard}>
-                <input
-                  type="text"
-                  placeholder="Enter question"
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Enter answer"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                />
-                <button type="submit">Add Flashcard</button>
-              </form>
-            )}
-
-            {group.flashcards.length > 0 && (
-              <>
-                <div className="featured-card">
-                  {group.flashcards[0].question}
-                </div>
-
-                <div className="cards-header">
-                  <div>Question</div>
-                  <div>Answer</div>
-                </div>
-
-                <div className="cards-list">
-                  {group.flashcards.map(card => (
-                    <div key={card.id} className="card-row">
-                      <div className="card-side">
-                        <button
-                          className="delete-btn"
-                          onClick={() => deleteFlashcard(group.id, card.id)}
-                        >
-                          ×
-                        </button>
-                        {card.question}
-                      </div>
-                      <div className="card-side">
-                        {card.answer}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+        <div className="dashboard-box">
+          <h2>Needs Improvement</h2>
+          <p className="subtitle">Based on your test scores</p>
+          <div className="sets-list">
+            {groups
+              .filter(group => group.lastAccuracy <= 75)
+              .sort((a, b) => (a.lastAccuracy || 100) - (b.lastAccuracy || 100))
+              .slice(0, 2)
+              .map(group => (
+                <div key={group.id} className="set-item">
+                  <h3>{group.name}</h3>
+                  <p className="set-info">Test score: {group.lastAccuracy?.toFixed(1) || 'No'} % accuracy</p>
+                <button
+                  className="action-button"
+                  onClick={() => startStudyMode(group.id)}
+                >
+                  Practice Now
+                </button>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
+
+        <div className="dashboard-box">
+          <h2>Recently Used</h2>
+          <div className="sets-list">
+            {recentGroups.map(group => (
+              <div key={group.id} className="set-item">
+                <h3>{group.name}</h3>
+                <div className="progress-container">
+                  <div
+                    className="progress-bar"
+                    style={{ width: `${(group.flashcards.length / 10) * 100}%` }}
+                  ></div>
+                </div>
+                <p className="set-info">{group.flashcards.length} cards</p>
+                <button
+                  className="action-button"
+                  onClick={() => startStudyMode(group.id)}
+                >
+                  Continue
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {studyMode && studyCards.length > 0 && (
         <div className="study-mode">
           <button className="study-close-btn" onClick={exitStudyMode}>×</button>
           
-          <div
-            className={`study-card ${isCardFlipped ? 'flipped' : ''}`}
-            onClick={() => setIsCardFlipped(!isCardFlipped)}
-          >
-            <div className="study-card-front">
-              {studyCards[currentCardIndex].question}
+          <div className="study-card">
+            <div className="study-progress">
+              {results.length} / {studyCards.length} Cards
+              {results.length > 0 && (
+                <span className="accuracy">
+                  {((results.filter(r => r.correct).length / results.length) * 100).toFixed(1)}% Correct
+                </span>
+              )}
             </div>
-            <div className="study-card-back">
-              {studyCards[currentCardIndex].answer}
-            </div>
-          </div>
 
-          <div className="study-controls">
-            <button className="study-nav-btn" onClick={prevCard}>
-              ←
-            </button>
-            <span className="study-counter">
-              {currentCardIndex + 1} / {studyCards.length}
-            </span>
-            <button className="study-nav-btn" onClick={nextCard}>
-              →
-            </button>
-            <button className="study-nav-btn study-shuffle-btn" onClick={shuffleCards}>
-              🔄 Remix
-            </button>
+            <div className="card-content">
+              <div className="question">
+                {studyCards[currentCardIndex].question}
+              </div>
+
+              {!showAnswer ? (
+                <div className="answer-input">
+                  <input
+                    type="text"
+                    value={userAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    placeholder="Type your answer..."
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && userAnswer.trim()) {
+                        checkAnswer();
+                      }
+                    }}
+                  />
+                  <div className="input-buttons">
+                    <button
+                      className="check-btn"
+                      onClick={checkAnswer}
+                      disabled={!userAnswer.trim()}
+                    >
+                      Check
+                    </button>
+                    <button
+                      className="skip-btn"
+                      onClick={skipCard}
+                    >
+                      Skip
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="answer-reveal">
+                  <div className={`result ${results[results.length - 1].correct ? 'correct' : 'incorrect'}`}>
+                    {results[results.length - 1].correct ? 'Correct!' : 'Incorrect'}
+                  </div>
+                  <div className="correct-answer">
+                    Correct answer: {studyCards[currentCardIndex].answer}
+                  </div>
+                  {!results[results.length - 1].correct && !results[results.length - 1].skipped && (
+                    <div className="your-answer">
+                      Your answer: {userAnswer}
+                    </div>
+                  )}
+                  <button
+                    className="next-btn"
+                    onClick={nextCard}
+                  >
+                    {currentCardIndex < studyCards.length - 1 ? 'Next Card' : 'Finish'}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+      {error && <div className="error">{error}</div>}
     </div>
   );
 };

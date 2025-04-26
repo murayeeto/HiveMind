@@ -14,7 +14,8 @@ import Calendar from './pages/Calendar';
 import Faq from './pages/Faq';
 import Account from './pages/Account';
 import StudyWithBuddy from './pages/StudyWithBuddy';
-import Pricing from './pages/Pricing'
+import Pricing from './pages/Pricing';
+import YourSets from './pages/YourSets';
 import StudyPage from './pages/StudyPage'
 import Study from './pages/Study';
 
@@ -90,6 +91,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Study />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/your-sets"
+                element={
+                  <PrivateRoute>
+                    <YourSets />
                   </PrivateRoute>
                 }
               />
