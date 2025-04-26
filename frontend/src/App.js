@@ -16,6 +16,7 @@ import Account from './pages/Account';
 import StudyWithBuddy from './pages/StudyWithBuddy';
 import Pricing from './pages/Pricing'
 import StudyPage from './pages/StudyPage'
+import Study from './pages/Study';
 
 
 // Auth Context
@@ -82,6 +83,14 @@ function App() {
                 path="/studysets"
                 element={
                   <StudyPage />
+                }
+              />
+              <Route
+                path="/study"
+                element={
+                  <PrivateRoute>
+                    <Study />
+                  </PrivateRoute>
                 }
               />
             </Routes>

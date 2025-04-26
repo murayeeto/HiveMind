@@ -1,0 +1,304 @@
+/* Base Styles */
+.study-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.page-title {
+  color: #222;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2rem;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-box {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #007bff;
+}
+
+.dashboard-box h2 {
+  color: #222;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Create Set Form */
+.big-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.big-button {
+  padding: 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.big-button.create-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.big-button.create-button:hover {
+  background-color: #0056b3;
+}
+
+.plus-icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+/* Set Items */
+.sets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.set-item {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 3px solid #007bff;
+}
+
+.set-item h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.score, .last-studied {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin: 8px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* Buttons */
+.set-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.hive-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hive-button.small {
+  background-color: #007bff;
+  color: white;
+}
+
+.hive-button.small:hover {
+  background-color: #0056b3;
+}
+
+.hive-button.small.active {
+  background-color: #28a745;
+}
+
+.hive-button.small.delete {
+  background-color: #dc3545;
+}
+
+.hive-button.small.delete:hover {
+  background-color: #c82333;
+}
+
+/* Add Cards Form */
+.add-cards-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.add-cards-form input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-cards-form button {
+  padding: 8px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-cards-form button:hover {
+  background-color: #218838;
+}
+
+/* Study Mode */
+.study-mode {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.study-card {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin-bottom: 2rem;
+  perspective: 1000px;
+}
+
+.study-card-front,
+.study-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+}
+
+.study-card-back {
+  transform: rotateX(180deg);
+}
+
+.study-card.flipped .study-card-front {
+  transform: rotateX(-180deg);
+}
+
+.study-card.flipped .study-card-back {
+  transform: rotateX(0);
+}
+
+.study-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.study-nav-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.study-nav-btn:hover {
+  background: #0056b3;
+}
+
+.study-shuffle-btn {
+  background: #dc3545;
+}
+
+.study-shuffle-btn:hover {
+  background: #c82333;
+}
+
+.study-counter {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 1rem;
+}
+
+.study-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Utility Classes */
+.error {
+  color: #dc3545;
+  text-align: center;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #f8d7da;
+  border-radius: 4px;
+}
+
+.loading {
+  text-align: center;
+  margin: 2rem 0;
+  color: #666;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+
+  .study-card {
+    height: 300px;
+  }
+}
