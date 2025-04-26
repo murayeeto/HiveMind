@@ -23,8 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "predeploy": "cp .env.github-pages .env.production && npm run build",
+    "deploy": "gh-pages -d build",
+    "deploy:prod": "npm run build && gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -47,5 +48,5 @@
   "devDependencies": {
     "gh-pages": "^5.0.0"
   },
-  "homepage": "."
+  "homepage": "https://murayeeto.github.io/NamePending"
 }
