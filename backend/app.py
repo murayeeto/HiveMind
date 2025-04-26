@@ -17,8 +17,8 @@ CORS(app, resources={
         "origins": [
             "http://localhost:4000",
             "https://localhost:4000",
-            "https://hornethelper-36e05.firebaseapp.com",
-            "https://hornethelper-36e05.web.app"
+            "https://hivemind-app.firebaseapp.com",
+            "https://hivemind-app.web.app"
         ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
@@ -134,4 +134,4 @@ def server_error(error):
     return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8888)
+    app.run(debug=True, port=8000)

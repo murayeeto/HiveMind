@@ -13,7 +13,7 @@ const Footer = () => {
           <Link to="/pricing">Pricing</Link>
         </div>
         <div className="footer-copyright">
-            {new Date().getFullYear()} Hornet Helper.
+            {new Date().getFullYear()} HiveMind.
         </div>
       </div>
     </footer>

@@ -150,7 +150,7 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
             const { sessionData, messagesRef } = await getSessionData();
 
             // Fetch video recommendations from AI service
-            const response = await axios.post('http://localhost:8888/api/recommend-video', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/recommend-video`, {
                 major: sessionData.course
             });
 
@@ -195,7 +195,7 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
             const { sessionData, messagesRef } = await getSessionData();
 
             // Fetch textbook recommendations from AI service
-            const response = await axios.post('http://localhost:8888/api/recommend-textbook', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/recommend-textbook`, {
                 major: sessionData.course
             });
 
@@ -285,7 +285,7 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
             }
 
             // Get AI response for user's question
-            const response = await axios.post('http://localhost:8888/api/ask-ai', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ask-ai`, {
                 message: newMessage.trim()
             });
             

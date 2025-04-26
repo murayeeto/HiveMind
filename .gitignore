@@ -21,6 +21,10 @@ pythonenv*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
+
+# Keep environment examples
+!.env.example
 
 # Node.js
 **/node_modules/
