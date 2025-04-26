@@ -1,0 +1,50 @@
+# Python virtual environments
+**/venv/
+**/ENV/
+**/env/
+**/.env
+**/.venv
+**/env.bak/
+**/venv.bak/
+pythonenv*
+
+# Environment files
+**/.env
+**/.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Node.js
+**/node_modules/
+**/.pnp
+**/.pnp.js
+**/package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+**/build/
+**/dist/
+**/coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Keep environment examples
+!.env.example
+!.env.production
