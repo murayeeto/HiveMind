@@ -309,7 +309,7 @@ const Calendar = () => {
                         </div>
                       )}
                       <div className="events">
-                        {getDayEvents(day).map(event => (
+                        {getDayEvents(day).slice(0, 3).map(event => ( // Show max 3 events
                           <div
                             key={event.id}
                             className="event-preview"
@@ -322,6 +322,11 @@ const Calendar = () => {
                             <span className="event-name">{event.title}</span>
                           </div>
                         ))}
+                        {getDayEvents(day).length > 3 && (
+                          <div className="more-events-indicator">
+                            +{getDayEvents(day).length - 3} more
+                          </div>
+                        )}
                       </div>
                     </>
                   )}
