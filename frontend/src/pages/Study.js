@@ -1,33 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, where, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { FaPlus } from 'react-icons/fa';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import './Study.css';
 
 const Study = () => {
+  const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
-  const [newGroupName, setNewGroupName] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [lowScores, setLowScores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [studyMode, setStudyMode] = useState(false);
-  const [currentGroupId, setCurrentGroupId] = useState(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [studyCards, setStudyCards] = useState([]);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      loadGroups();
-    }
-  }, [user]);
-
-  const loadGroups = async () => {
+  const loadData = useCallback(async () => {
     try {
+      // Load groups
       const groupsQuery = query(
         collection(firebase.db, 'flashcard_groups'),
         where('userId', '==', user.uid)
@@ -51,134 +44,74 @@ const Study = () => {
         
         loadedGroups.push(groupData);
       }
+setGroups(loadedGroups);
 
-      setGroups(loadedGroups);
+// Get user's test scores from users collection
+const userDoc = await getDoc(doc(firebase.db, 'users', user.uid));
+if (userDoc.exists()) {
+  const userData = userDoc.data();
+  const testScores = userData.testScores || {};
+
+  // Convert scores object to array and add set names
+  const scores = Object.entries(testScores)
+    .map(([setId, scoreData]) => {
+      const group = loadedGroups.find(g => g.id === setId);
+      return {
+        setId,
+        setName: group ? group.name : 'Unknown Set',
+        ...scoreData,
+        score: (scoreData.correctAnswers / scoreData.totalCards) * 100
+      };
+    })
+    .filter(score => score.score <= 75)
+    .sort((a, b) => a.score - b.score);
+
+  setLowScores(scores.slice(0, 2));
+}
       setLoading(false);
     } catch (err) {
       console.error('Error loading groups:', err);
       setError('Failed to load flashcard groups');
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const createGroup = async (e) => {
-    e.preventDefault();
-    if (!newGroupName.trim()) {
-      setError('Group name is required');
-      return;
+  useEffect(() => {
+    if (user) {
+      loadData();
     }
+  }, [user, loadData]);
 
-    try {
-      const newGroup = {
-        name: newGroupName.trim(),
-        userId: user.uid,
-        createdAt: new Date().toISOString()
-      };
 
-      const docRef = await addDoc(collection(firebase.db, 'flashcard_groups'), newGroup);
-      setGroups([...groups, { ...newGroup, id: docRef.id, flashcards: [] }]);
-      setNewGroupName('');
-      setError('');
-    } catch (err) {
-      console.error('Error creating group:', err);
-      setError('Failed to create group');
-    }
-  };
-
-  const deleteGroup = async (groupId) => {
-    try {
-      const flashcardsQuery = query(
-        collection(firebase.db, 'flashcards'),
-        where('groupId', '==', groupId)
-      );
-      const flashcardsSnapshot = await getDocs(flashcardsQuery);
-      const deletePromises = flashcardsSnapshot.docs.map(doc => 
-        deleteDoc(doc.ref)
-      );
-      await Promise.all(deletePromises);
-
-      await deleteDoc(doc(firebase.db, 'flashcard_groups', groupId));
-      setGroups(groups.filter(group => group.id !== groupId));
-      if (selectedGroup === groupId) {
-        setSelectedGroup(null);
-      }
-    } catch (err) {
-      console.error('Error deleting group:', err);
-      setError('Failed to delete group');
-    }
-  };
-
-  const createFlashcard = async (e) => {
-    e.preventDefault();
-    if (!selectedGroup) {
-      setError('Please select a group first');
-      return;
-    }
-    if (!question.trim() || !answer.trim()) {
-      setError('Both question and answer are required');
-      return;
-    }
-
-    try {
-      const newFlashcard = {
-        question: question.trim(),
-        answer: answer.trim(),
-        userId: user.uid,
-        groupId: selectedGroup,
-        createdAt: new Date().toISOString()
-      };
-
-      const docRef = await addDoc(collection(firebase.db, 'flashcards'), newFlashcard);
-      setGroups(groups.map(group => {
-        if (group.id === selectedGroup) {
-          return {
-            ...group,
-            flashcards: [...group.flashcards, { ...newFlashcard, id: docRef.id, isFlipped: false }]
-          };
-        }
-        return group;
-      }));
-      setQuestion('');
-      setAnswer('');
-      setError('');
-    } catch (err) {
-      console.error('Error creating flashcard:', err);
-      setError('Failed to create flashcard');
-    }
-  };
-
-  const deleteFlashcard = async (groupId, cardId) => {
-    try {
-      await deleteDoc(doc(firebase.db, 'flashcards', cardId));
-      setGroups(groups.map(group => {
-        if (group.id === groupId) {
-          return {
-            ...group,
-            flashcards: group.flashcards.filter(card => card.id !== cardId)
-          };
-        }
-        return group;
-      }));
-    } catch (err) {
-      console.error('Error deleting flashcard:', err);
-      setError('Failed to delete flashcard');
-    }
-  };
-
-  const startStudyMode = (groupId) => {
+  const startStudyMode = async (groupId) => {
     const group = groups.find(g => g.id === groupId);
     if (group) {
-      setStudyCards([...group.flashcards]);
-      setCurrentGroupId(groupId);
-      setCurrentCardIndex(0);
-      setStudyMode(true);
-      setIsCardFlipped(false);
+      try {
+        // Update lastStudied timestamp in Firestore
+        await updateDoc(doc(firebase.db, 'flashcard_groups', groupId), {
+          lastStudied: new Date().toISOString()
+        });
+
+        // Update local state
+        setGroups(groups.map(g => {
+          if (g.id === groupId) {
+            return { ...g, lastStudied: new Date().toISOString() };
+          }
+          return g;
+        }));
+
+        setStudyCards([...group.flashcards]);
+        setCurrentCardIndex(0);
+        setStudyMode(true);
+        setIsCardFlipped(false);
+      } catch (err) {
+        console.error('Error updating last studied time:', err);
+      }
     }
   };
 
   const exitStudyMode = () => {
     setStudyMode(false);
-    setCurrentGroupId(null);
     setStudyCards([]);
     setCurrentCardIndex(0);
     setIsCardFlipped(false);
@@ -214,109 +147,81 @@ const Study = () => {
   }
 
   const recentGroups = groups
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3);
+    .sort((a, b) => new Date(b.lastStudied || b.createdAt) - new Date(a.lastStudied || a.createdAt))
+    .slice(0, 2);
 
   return (
     <div className="study-page">
       <h1 className="page-title">Your Study Hub</h1>
       
       <div className="dashboard-container">
-        <div className="dashboard-box sets-box">
+        <div className="dashboard-box study-sets-box">
           <h2>Study Sets</h2>
-          <div className="big-buttons-container">
-            <button 
+          <div className="action-buttons">
+            <button
               className="big-button create-button"
-              onClick={() => setSelectedGroup(null)}
+              onClick={() => navigate('/your-sets')}
             >
               <FaPlus className="plus-icon" />
-              <span>Create New Set</span>
+              <span>Create New</span>
             </button>
-            {selectedGroup === null && (
-              <form onSubmit={createGroup}>
-                <input
-                  type="text"
-                  placeholder="Enter set name"
-                  value={newGroupName}
-                  onChange={(e) => setNewGroupName(e.target.value)}
-                />
-                <button type="submit">Create</button>
-              </form>
-            )}
+            <button
+              className="big-button view-sets-button"
+              onClick={() => navigate('/your-sets')}
+            >
+              <span>Your Sets</span>
+            </button>
+            <button
+              className="big-button games-button"
+              onClick={() => navigate('/games')}
+            >
+              <span>Games</span>
+            </button>
           </div>
         </div>
 
-        <div className="dashboard-box">
-          <h2>Your Sets</h2>
-          <div className="sets-list">
-            {groups.map(group => (
-              <div key={group.id} className="set-item">
-                <h3>{group.name}</h3>
-                <p className="score">{group.flashcards.length} cards</p>
-                <div className="set-buttons">
-                  <button 
-                    className="hive-button small"
-                    onClick={() => startStudyMode(group.id)}
-                  >
-                    Study
-                  </button>
-                  <button 
-                    className={`hive-button small ${selectedGroup === group.id ? 'active' : ''}`}
-                    onClick={() => setSelectedGroup(prev => prev === group.id ? null : group.id)}
-                  >
-                    {selectedGroup === group.id ? 'Cancel' : 'Add Cards'}
-                  </button>
-                  <button 
-                    className="hive-button small delete"
-                    onClick={() => deleteGroup(group.id)}
-                  >
-                    Delete
-                  </button>
+        <div className="dashboard-box needs-improvement-box">
+          <h2>Needs Improvement</h2>
+          <p className="subtitle">Based on your test scores</p>
+          {lowScores.length > 0 ? (
+            lowScores.map(score => (
+              <div key={score.setId} className="improvement-item">
+                <h3>{score.setName}</h3>
+                <div className="test-score">
+                  <span>Test score: {score.correctAnswers} / {score.totalCards} ({score.score.toFixed(1)}% accuracy)</span>
+                  <div className="test-date">
+                    Taken: {new Date(score.completedAt).toLocaleString()}
+                  </div>
                 </div>
-                {selectedGroup === group.id && (
-                  <form className="add-cards-form" onSubmit={createFlashcard}>
-                    <input
-                      type="text"
-                      placeholder="Question"
-                      value={question}
-                      onChange={(e) => setQuestion(e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Answer"
-                      value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
-                    />
-                    <button type="submit">Add Card</button>
-                  </form>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="dashboard-box recent-box">
-          <h2>Recently Added</h2>
-          <div className="sets-list">
-            {recentGroups.map(group => (
-              <div key={group.id} className="set-item">
-                <h3>{group.name}</h3>
-                <div className="progress-container">
-                  <div 
-                    className="progress-bar" 
-                    style={{ width: `${(group.flashcards.length / 10) * 100}%` }}
-                  ></div>
-                </div>
-                <p className="last-studied">{group.flashcards.length} cards</p>
-                <button 
-                  className="hive-button small"
-                  onClick={() => startStudyMode(group.id)}
+                <button
+                  className="practice-button"
+                  onClick={() => navigate(`/test/${score.setId}`)}
                 >
-                  Study Now
+                  Practice Now
                 </button>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <p className="no-scores">No low scores to show</p>
+          )}
+        </div>
+
+        <div className="dashboard-box recently-used-box">
+          <h2>Recently Used</h2>
+          {recentGroups.slice(0, 2).map(group => (
+            <div key={group.id} className="recent-item">
+              <h3>{group.name}</h3>
+              <div className="last-studied">
+                Last studied: {group.lastStudied ? new Date(group.lastStudied).toLocaleString() : 'Never'}
+              </div>
+              <button
+                className="continue-button"
+                onClick={() => startStudyMode(group.id)}
+              >
+                Continue
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 

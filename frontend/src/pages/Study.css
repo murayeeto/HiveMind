@@ -1,53 +1,61 @@
 /* Base Styles */
 .study-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .page-title {
   color: #222;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   font-size: 2.2rem;
 }
 
 /* Dashboard Layout */
 .dashboard-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
 }
 
 .dashboard-box {
   background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-top: 4px solid #007bff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-box h2 {
   color: #222;
-  margin-top: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
 }
 
-/* Create Set Form */
-.big-buttons-container {
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+/* Study Sets Box */
+.study-sets-box {
+  border-top: 4px solid #FFD700;
+}
+
+.action-buttons {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 20px;
 }
 
 .big-button {
-  padding: 20px;
+  padding: 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
@@ -58,12 +66,33 @@
 }
 
 .big-button.create-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #FFD700;
+  color: #222;
 }
 
 .big-button.create-button:hover {
-  background-color: #0056b3;
+  background-color: #FFC000;
+  transform: translateY(-2px);
+}
+
+.big-button.view-sets-button {
+  background-color: #222;
+  color: white;
+}
+
+.big-button.view-sets-button:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+.big-button.games-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.big-button.games-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
 }
 
 .plus-icon {
@@ -71,113 +100,98 @@
   font-size: 1.2rem;
 }
 
-/* Set Items */
-.sets-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 15px;
+/* Needs Improvement Box */
+.needs-improvement-box {
+  border-top: 4px solid #dc3545;
 }
 
-.set-item {
+.improvement-item {
   background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 5px;
-  border-left: 3px solid #007bff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
-.set-item h3 {
+.no-scores {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.improvement-item h3 {
   margin: 0 0 10px 0;
   color: #333;
+  font-size: 1.2rem;
 }
 
-.score, .last-studied {
-  font-size: 0.9rem;
+.test-score {
   color: #666;
-  margin: 5px 0;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
 }
 
-/* Progress Bar */
-.progress-container {
-  width: 100%;
-  height: 8px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  margin: 8px 0;
-  overflow: hidden;
+.test-date {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 5px;
+  font-style: italic;
 }
 
-.progress-bar {
-  height: 100%;
-  background-color: #007bff;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
-/* Buttons */
-.set-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.hive-button {
+.practice-button {
   padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
   border: none;
-  border-radius: 4px;
-  font-weight: 500;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.hive-button.small {
-  background-color: #007bff;
-  color: white;
-}
-
-.hive-button.small:hover {
-  background-color: #0056b3;
-}
-
-.hive-button.small.active {
-  background-color: #28a745;
-}
-
-.hive-button.small.delete {
-  background-color: #dc3545;
-}
-
-.hive-button.small.delete:hover {
+.practice-button:hover {
   background-color: #c82333;
+  transform: translateY(-2px);
 }
 
-/* Add Cards Form */
-.add-cards-form {
-  display: grid;
-  gap: 10px;
-  margin-top: 15px;
-  padding: 15px;
-  background-color: white;
-  border-radius: 4px;
+/* Recently Used Box */
+.recently-used-box {
+  border-top: 4px solid #28a745;
 }
 
-.add-cards-form input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.recent-item {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
 }
 
-.add-cards-form button {
-  padding: 8px;
+.recent-item h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.last-studied {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.continue-button {
+  padding: 8px 16px;
   background-color: #28a745;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.add-cards-form button:hover {
+.continue-button:hover {
   background-color: #218838;
+  transform: translateY(-2px);
 }
 
 /* Study Mode */
@@ -199,6 +213,7 @@
   height: 400px;
   margin-bottom: 2rem;
   perspective: 1000px;
+  cursor: pointer;
 }
 
 .study-card-front,
@@ -214,6 +229,7 @@
   font-size: 1.5rem;
   backface-visibility: hidden;
   transition: transform 0.6s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .study-card-back {
@@ -241,22 +257,24 @@
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  background: #007bff;
-  color: white;
+  background: #FFD700;
+  color: #222;
   cursor: pointer;
   font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .study-nav-btn:hover {
-  background: #0056b3;
+  background: #FFC000;
 }
 
 .study-shuffle-btn {
-  background: #dc3545;
+  background: #222;
+  color: white;
 }
 
 .study-shuffle-btn:hover {
-  background: #c82333;
+  background: #444;
 }
 
 .study-counter {
@@ -276,6 +294,7 @@
   cursor: pointer;
 }
 
+
 /* Utility Classes */
 .error {
   color: #dc3545;
@@ -293,12 +312,12 @@
 }
 
 /* Responsive Adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .dashboard-container {
     grid-template-columns: 1fr;
   }
 
-  .study-card {
-    height: 300px;
+  .dashboard-box {
+    margin-bottom: 20px;
   }
 }

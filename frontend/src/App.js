@@ -17,6 +17,11 @@ import StudyWithBuddy from './pages/StudyWithBuddy';
 import Pricing from './pages/Pricing'
 import StudyPage from './pages/StudyPage'
 import Study from './pages/Study';
+import YourSets from './pages/YourSets';
+import SetView from './pages/SetView';
+import Games from './pages/Games';
+import MatchingGame from './pages/MatchingGame';
+import TestMode from './pages/TestMode';
 
 
 // Auth Context
@@ -76,6 +81,46 @@ function App() {
                 element={
                   <PrivateRoute>
                     <Account />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/your-sets"
+                element={
+                  <PrivateRoute>
+                    <YourSets />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/set/:setId"
+                element={
+                  <PrivateRoute>
+                    <SetView />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/games"
+                element={
+                  <PrivateRoute>
+                    <Games />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/games/matching/:setId"
+                element={
+                  <PrivateRoute>
+                    <MatchingGame />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/test/:setId"
+                element={
+                  <PrivateRoute>
+                    <TestMode />
                   </PrivateRoute>
                 }
               />
