@@ -1,12 +1,14 @@
 .App {
   min-height: 100vh;
+  min-width: 100vw;
   display: flex;
   flex-direction: column;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
 .container {
   flex: 1;
-  padding: 20px;
 }
 
 /* Page Transitions */
@@ -82,7 +84,6 @@
 .features-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
   margin-top: 40px;
 }
 
@@ -179,47 +180,4 @@
 .ai-solution-card p {
   color: var(--dark-gray);
   margin-bottom: 20px;
-}
-
-/* Footer Styles */
-.app-footer {
-  background-color: rgb(176, 26, 26);
-  padding: 20px 0;
-  margin-top: auto;
-  border-top: 1px solid #e9ecef;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.footer-links {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.footer-links a {
-  color: white;
-  font-weight: 1000;
-  text-decoration: none;
-  font-size: 1.2rem;
-  text-shadow: 0px 4px 4px blue;
-  text-underline-offset: 6px;
-}
-
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-.footer-copyright {
-  font-size: 0.8rem;
-  color: lightgray;
 }

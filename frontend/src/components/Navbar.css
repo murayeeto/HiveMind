@@ -1,5 +1,5 @@
 .navbar {
-  background: linear-gradient(to right, var(--primary-blue), var(--dark-blue));
+  background: black;
   height: 80px;
   display: flex;
   justify-content:space-between !important; 
@@ -147,7 +147,7 @@
 
 .logout-btn {
   background: transparent;
-  border: 2px solid var(--primary-red);
+  border: 2px solid var(--primary-yellow);
   color: var(--primary-white);
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -157,8 +157,8 @@
 }
 
 .logout-btn:hover {
-  background: var(--primary-red);
-  color: var(--primary-white);
+  background: var(--primary-white);
+  color: var(--primary-black);
 }
 
 .menu-icon {
@@ -309,8 +309,8 @@
 }
 
 .logo-image {
-  height: 8rem; 
-  min-height: 8rem !important;
+  height: 5rem !important; 
+  min-height: 5rem !important;
   width: auto;
   object-fit: contain;
   margin-right: -5px;
