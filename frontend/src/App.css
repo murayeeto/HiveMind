@@ -1,12 +1,14 @@
 .App {
   min-height: 100vh;
+  min-width: 100vw;
   display: flex;
   flex-direction: column;
+  padding: 0px !important;
+  margin: 0px !important;
 }
 
 .container {
   flex: 1;
-  padding: 20px;
 }
 
 /* Page Transitions */
@@ -82,7 +84,6 @@
 .features-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
   margin-top: 40px;
 }
 
