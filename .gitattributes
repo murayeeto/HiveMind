@@ -1,4 +1,0 @@
-# CSV files
-*.csv filter=lfs diff=lfs merge=lfs -text
-# Specifically track the textbooks.csv
-backend/csv/textbooks.csv filter=lfs diff=lfs merge=lfs -text
