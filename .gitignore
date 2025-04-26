@@ -1,3 +1,6 @@
+# Large files
+backend/csv/textbooks.csv
+
 # Python virtual environments
 **/venv/
 **/ENV/
