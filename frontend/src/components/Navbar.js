@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
-import dsuLogo from '../assets/dsucslogo.png'
+import beeLogo from '../assets/bee.jpg'
 
 // Default profile picture
 const DEFAULT_PROFILE_PIC = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
@@ -53,9 +53,9 @@ const Navbar = () => {
         <div className="navbar-logo">
           <NavLink to="/" className="logo-link">
             <div className="logo-container">
-              <img 
-                src={dsuLogo} 
-                alt="DSU Logo" 
+              <img
+                src={beeLogo}
+                alt="Bee Logo"
                 className="logo-image"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -67,7 +67,7 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className='nav-items-div'>
-      
+
           <div className="menu-icon" onClick={toggleMenu}>
             <div className={isMenuOpen ? 'hamburger open' : 'hamburger'}>
               <span></span>
@@ -79,8 +79,8 @@ const Navbar = () => {
           <ul className={isMenuOpen ? 'nav-menu active' : 'nav-menu'}>
             {categories.map((category) => (
               <li key={category.id} className="nav-item">
-                <NavLink 
-                  to={`/${category.id}`} 
+                <NavLink
+                  to={`/${category.id}`}
                   className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -93,9 +93,9 @@ const Navbar = () => {
               <li className="nav-item auth-item">
                 <div className="user-info">
                   <NavLink to="/account" className="user-profile">
-                    <img 
-                      src={user.photoURL || DEFAULT_PROFILE_PIC} 
-                      alt="Profile" 
+                    <img
+                      src={user.photoURL || DEFAULT_PROFILE_PIC}
+                      alt="Profile"
                       className="profile-picture"
                       onError={(e) => {
                         e.target.onerror = null;
