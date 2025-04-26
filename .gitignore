@@ -1,5 +1,8 @@
-# Large files
+# Sensitive files
 backend/csv/textbooks.csv
+firebase/hornethelper-36e05-firebase-adminsdk-fbsvc-9e57dc05bb.json
+**/firebase-adminsdk*.json
+!firebase/service-account.example.json
 
 # Python virtual environments
 **/venv/
