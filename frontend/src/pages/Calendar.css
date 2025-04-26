@@ -76,6 +76,7 @@
   cursor: pointer;
   transition: all 0.2s;
   min-height: 120px;
+  overflow: hidden;
 }
 
 .day-cell:hover {
@@ -110,6 +111,8 @@
   flex-direction: column;
   gap: 4px;
   margin-top: 0.5rem;
+  max-height: 80px; /* Adjust based on your cell size */
+  overflow: hidden;
 }
 
 .event-preview {
@@ -303,6 +306,9 @@
   height: 1440px; /* 24 hours * 60px */
   position: relative;
   margin-left: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px); /* Adjust based on your header height */
+  position: relative;
 }
 
 /* Time Labels Column */
@@ -310,6 +316,10 @@
   width: 80px;
   position: relative;
   height: 1440px; /* Match container height */
+  position: sticky;
+  left: 0;
+  background-color: #1e1e1e;
+  z-index: 2;
 }
 
 /* Time Label Positioning */
@@ -381,3 +391,12 @@
   z-index: 1;
 }
 
+.more-events-indicator {
+  font-size: 0.7rem;
+  color: #FFD700;
+  background: rgba(0,0,0,0.3);
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-top: 2px;
+  display: inline-block;
+}
