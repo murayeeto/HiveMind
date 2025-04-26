@@ -62,7 +62,7 @@ const Login = () => {
       
       {!user ? (
         <div className="login-box">
-          <h2>Welcome to Hornet Helper</h2>
+          <h2>Welcome to HiveMind</h2>
           <p>Sign in with your Google account to get started</p>
           <button 
             className={`google-signin-btn ${loading ? 'loading' : ''}`}

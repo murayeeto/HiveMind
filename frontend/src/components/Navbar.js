@@ -61,7 +61,7 @@ const Navbar = () => {
                   e.target.src = DEFAULT_PROFILE_PIC;
                 }}
               />
-              <span className="logo-text">Hornet Helper</span>
+              <span className="logo-text">HiveMind</span>
             </div>
           </NavLink>
         </div>

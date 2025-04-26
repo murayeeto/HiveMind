@@ -1,4 +1,4 @@
-# HornetHelper
+# HiveMind
 
 A study assistance platform with AI-powered features.
 
@@ -11,6 +11,7 @@ A study assistance platform with AI-powered features.
 - Kaggle account for dataset access
 - OpenAI API key
 - YouTube Data API key
+- Firebase project credentials
 
 ### Backend Setup
 
@@ -51,10 +52,16 @@ npm install
 ```
 
 3. Set up environment variables:
-- Create a `.env` file in the frontend directory
-- Add the following variables:
+- Copy `.env.example` to create `.env` for development and `.env.production` for production
+- Update the Firebase configuration in both files with your Firebase project details:
 ```
-REACT_APP_BACKEND_URL=http://localhost:8888
+REACT_APP_API_URL=http://localhost:8000  # For development
+REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+REACT_APP_FIREBASE_APP_ID=your_firebase_app_id
 ```
 
 ### Dataset Setup
@@ -93,14 +100,14 @@ Alternatively, you can manually:
 cd backend
 python app.py
 ```
-The backend will run on http://localhost:8888
+The backend will run on http://localhost:8000
 
 2. In a new terminal, start the frontend:
 ```bash
 cd frontend
 npm start
 ```
-The frontend will run on http://localhost:3000
+The frontend will run on http://localhost:4000
 
 ## Features
 
@@ -117,7 +124,8 @@ The frontend will run on http://localhost:3000
 
 ## Troubleshooting
 
-- If you encounter CORS issues, ensure the backend is running on port 8888
+- If you encounter CORS issues, ensure the backend is running on port 8000
 - If the AI features aren't working, verify your OpenAI API key
 - For video recommendation issues, check your YouTube API key
 - For textbook recommendations, ensure the dataset is properly placed in the csv folder
+- For Firebase authentication issues, verify your Firebase configuration in the environment files

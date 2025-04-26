@@ -9,7 +9,7 @@ import './Home.css';
 
 const Home = () => {
   const [homeData, setHomeData] = useState({
-    title: 'Welcome to Hornet Helper',
+    title: 'Welcome to HiveMind',
     description: 'Find study partners, access recommended resources, and stay organized with our user-friendly platform. Your one-stop solution for all your needs!'
   });
   const [loading, setLoading] = useState(true);

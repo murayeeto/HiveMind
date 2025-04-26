@@ -15,16 +15,16 @@ const faqData = {
       title: "General Questions.",
       items: [
         {
-          question: "What is Hornet Helper?",
-          answer: "Hornet Helper is an AI-powered platform that helps students form study groups, automate scheduling, and discover personalized learning resources. Unlike manual tools, Hornet Helper connects you with peers, adds study sessions to your calendar automatically, and uses machine learning to recommend the best videos and textbooks"
+          question: "What is HiveMind?",
+          answer: "HiveMind is an AI-powered platform that helps students form study groups, automate scheduling, and discover personalized learning resources. Unlike manual tools, HiveMind connects you with peers, adds study sessions to your calendar automatically, and uses machine learning to recommend the best videos and textbooks"
         },
         {
           question: "How is this different from Discord or Facebook Groups?",
-          answer: "While Discord and Facebook are great for casual chats, Hornet Helper is designed specifically for focused learning with no manual scheduling: meetings auto-sync to your calendar when you join a group and AI-curated resources: Get recommendations tailored to your subject (e.g., STEM, languages) instead of searching endlessly."
+          answer: "While Discord and Facebook are great for casual chats, HiveMind is designed specifically for focused learning with no manual scheduling: meetings auto-sync to your calendar when you join a group and AI-curated resources: Get recommendations tailored to your subject (e.g., STEM, languages) instead of searching endlessly."
         },
         {
-          question: "Is Hornet Helper free?",
-          answer: "Hornet Helper offers a free plan with limited features, as well as many useful extra features for our Hornet Pro users."
+          question: "Is HiveMind free?",
+          answer: "HiveMind offers a free plan with limited features, as well as many useful extra features for our HiveMind Pro users."
         }
       ]
     },
@@ -123,7 +123,7 @@ const Faq = () => {
     
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8888/api/ask-ai', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ask-ai`, {
         message: userMessage
       });
       setChatMessages(prev => [...prev, { type: 'ai', text: response.data.response }]);
@@ -145,7 +145,7 @@ const Faq = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8888/api/recommend-video', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/recommend-video`, {
         major: user ? user.major : selectedMajor
       });
       console.log('Video response:', response.data);
