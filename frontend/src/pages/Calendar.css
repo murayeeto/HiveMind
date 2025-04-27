@@ -422,3 +422,38 @@
   margin-top: 2px;
   display: inline-block;
 }
+
+.download-btn {
+  background-color: #FFD700; /* Yellow */
+  color: #222222; /* Black text */
+  font-size: 14px; /* Smaller font size */
+  font-weight: bold;
+  padding: 6px 12px; /* Reduced padding */
+  border-radius: 4px; /* Slightly smaller border radius */
+  border: 2px solid #222222;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-btn:hover {
+  background-color: #ffcc00; /* Darker Yellow */
+  border-color: #444444; /* Darker black for the border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.download-btn:active {
+  background-color: #e6b800; /* Even darker yellow for active state */
+  transform: translateY(1px);
+}
+
+.download-btn svg {
+  margin-right: 6px; /* Reduced space between icon and text */
+  fill: #222222; /* Black color for the icon */
+}
+
+.download-btn:focus {
+  outline: none;
+}

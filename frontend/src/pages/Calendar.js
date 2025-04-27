@@ -51,6 +51,79 @@ const Calendar = () => {
   for (let i = 0; i < firstDayOfMonth; i++) days.push(null);
   for (let i = 1; i <= daysInMonth; i++) days.push(i);
 
+  const downloadICS = () => {
+    if (!events || Object.keys(events).length === 0) {
+      alert("No events to export!");
+      return;
+    }
+  
+    let icsContent = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//BeeProductive//EN",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH"
+    ].join("\n");
+  
+    for (const dateKey in events) {
+      if (!events.hasOwnProperty(dateKey)) continue;
+      
+      const eventDay = events[dateKey];
+      if (!eventDay) continue;
+  
+      for (const timeValue in eventDay) {
+        if (!eventDay.hasOwnProperty(timeValue)) continue;
+        
+        const event = eventDay[timeValue];
+        if (!event) continue;
+  
+        // Parse the date more reliably
+        const [year, month, day] = dateKey.split('-');
+        const eventDate = new Date(Date.UTC(year, month - 1, day));
+        
+        // Calculate start time (timeValue is hours as float)
+        const hours = Math.floor(parseFloat(timeValue));
+        const minutes = Math.round((parseFloat(timeValue) - hours) * 60);
+        const startTime = new Date(eventDate);
+        startTime.setHours(hours, minutes, 0);
+        
+        // End time (1 hour duration)
+        const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+  
+        const formatDate = (date) => {
+          return date.toISOString().replace(/[-:.]/g, '').split('T')[0] + 'Z';
+        };
+  
+        icsContent += "\n" + [
+          "BEGIN:VEVENT",
+          `UID:${event.id}@beeproductive`,
+          `DTSTAMP:${formatDate(new Date())}`,
+          `DTSTART:${formatDate(startTime)}`,
+          `DTEND:${formatDate(endTime)}`,
+          `SUMMARY:${event.title.replace(/\n/g, '\\n')}`,
+          `DESCRIPTION:${event.title.replace(/\n/g, '\\n')}`,
+          "END:VEVENT"
+        ].join("\n");
+      }
+    }
+  
+    icsContent += "\nEND:VCALENDAR";
+  
+    // Create download
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'hivemind-calendar.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+  
+  
+
   const changeMonth = (offset) => {
     setCurrentDate(new Date(year, currentDate.getMonth() + offset, 1));
     setSelectedDay(null);
@@ -179,6 +252,8 @@ const Calendar = () => {
               <h2>
                 <GiHoneycomb className="honeycomb-icon" /> 
                 {selectedDay.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                
+
               </h2>
             </div>
 
@@ -281,7 +356,7 @@ const Calendar = () => {
                 ←
               </button>
               <h2>
-                <GiBee className="bee-icon" /> {month} {year}
+                <GiBee className="bee-icon" /> {month} {year} <button onClick={downloadICS} className="download-btn">Export Calendar</button>
               </h2>
               <button onClick={() => changeMonth(1)} className="nav-btn">
                 →
