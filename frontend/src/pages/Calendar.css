@@ -118,6 +118,10 @@
   overflow-y: auto;
 }
 
+.event button {
+  margin-left: auto;
+}
+
 .event-preview {
   padding: 4px 6px;
   border-radius: 4px;
@@ -212,12 +216,6 @@
 
 .form-group {
   margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #FFD700;
 }
 
 .time-inputs {
@@ -456,4 +454,48 @@
 
 .download-btn:focus {
   outline: none;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #FFD700 !important;
+}
+
+/* Apply styles to the select dropdown */
+.time-inputs select {
+  padding: 0.5rem;
+  background: #333; /* Dark background */
+  color: black; /* White text */
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 1rem;
+  -webkit-appearance: none; /* Remove default styles in Webkit browsers */
+  -moz-appearance: none; /* Remove default styles in Firefox */
+  appearance: none; /* Remove default styles in all browsers */
+  width: 100%; /* Make the select element take full width */
+}
+
+/* Add a custom dropdown arrow */
+.time-inputs select::after {
+  content: ' ▼'; /* Custom down arrow */
+  color: white;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+/* Optional: Adding a custom background color to the dropdown arrow */
+.time-inputs select::-ms-expand {
+  display: none; /* Hides the default arrow in IE/Edge */
+}
+
+/* Style for the options */
+.time-inputs select option {
+  background-color: #333; /* Dark background */
+  color: white; /* White text */
+}
+
+/* Style the dropdown options when hovering */
+.time-inputs select option:hover {
+  background-color: #555; /* Lighter background on hover */
 }
