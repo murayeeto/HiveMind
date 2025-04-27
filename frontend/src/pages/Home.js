@@ -194,6 +194,16 @@ const Home = () => {
               <h3>Get AI Powered Recommendations</h3>
               <Link to="/faq#ai-demo" className="home-feature-btn ai">Get Started</Link>
             </div>
+            <div className="home-feature-card">
+              <img src="https://media.istockphoto.com/id/876037616/vector/rocket-launch-vector-illustration-isolated-on-white.jpg?s=612x612&w=0&k=20&c=BnOXPbM2RyZBSLKLiCJaY_9mkK_1VQ2GuCP-HFFbAX4=" alt="A rocket" />
+              <h3>Learn by playing our games</h3>
+              <Link to="/studywithbuddy" className="home-feature-btn study">Get Started</Link>
+            </div>
+            <div className="home-feature-card">
+              <img src="https://media.istockphoto.com/id/635806922/vector/standing-month-lined-spring-desk-calendar.jpg?s=612x612&w=0&k=20&c=O8aiI0cvWkaQ1eM5Jt6j7Jxv8mUTdy4RQ6R4coellcw=" alt="A calendar" className='home-feature-card-robot-image'/>
+              <h3>View your calendar</h3>
+              <Link to="/faq#ai-demo" className="home-feature-btn study">Get Started</Link>
+            </div>
           </div>
         </section>
       </div>
