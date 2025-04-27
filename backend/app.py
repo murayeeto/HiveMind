@@ -20,7 +20,8 @@ CORS(app, resources={
             "https://hivemind-app.firebaseapp.com",
             "https://hivemind-app.web.app",
             "https://murayeeto.github.io",
-            "https://murayeeto.github.io/HiveMind/#/"
+            "https://murayeeto.github.io/HiveMind/#/",
+            "https://hivemind-d8z8.onrender.com"
         ],
         "methods": ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
