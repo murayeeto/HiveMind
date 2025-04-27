@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/HiveMind/static/css/main.8d4e3391.css",
-    "main.js": "/HiveMind/static/js/main.6cbb356f.js",
+    "main.css": "/HiveMind/static/css/main.998d7f87.css",
+    "main.js": "/HiveMind/static/js/main.29b706cb.js",
     "static/js/453.35c49084.chunk.js": "/HiveMind/static/js/453.35c49084.chunk.js",
     "static/media/group_study_pic.png": "/HiveMind/static/media/group_study_pic.40d1f090e79af7c54d2c.png",
     "static/media/bee.jpg": "/HiveMind/static/media/bee.3bfce5e250749d2cc5f1.jpg",
     "index.html": "/HiveMind/index.html",
-    "main.8d4e3391.css.map": "/HiveMind/static/css/main.8d4e3391.css.map",
-    "main.6cbb356f.js.map": "/HiveMind/static/js/main.6cbb356f.js.map",
+    "main.998d7f87.css.map": "/HiveMind/static/css/main.998d7f87.css.map",
+    "main.29b706cb.js.map": "/HiveMind/static/js/main.29b706cb.js.map",
     "453.35c49084.chunk.js.map": "/HiveMind/static/js/453.35c49084.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8d4e3391.css",
-    "static/js/main.6cbb356f.js"
+    "static/css/main.998d7f87.css",
+    "static/js/main.29b706cb.js"
   ]
 }
