@@ -61,11 +61,11 @@
 }
 
 .nav-link:hover {
-  color: var(--light-red);
+  color: var(--primary-yellow);
 }
 
 .nav-link.active {
-  color: var(--primary-red);
+  color: var(--primary-yellow);
 }
 
 .nav-link.active::after {
@@ -75,7 +75,7 @@
   left: 0;
   width: 100%;
   height: 4px;
-  background-color: var(--primary-red);
+  background-color: var(--primary-yellow);
 }
 
 /* Auth styles */

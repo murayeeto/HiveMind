@@ -45,8 +45,8 @@ const Pricing = () => {
       cta: 'Get Started'
     },
     {
-      name: 'Hornet Pro',
-      color: 'red',
+      name: 'Premium',
+      color: 'gold',
       price: billingCycle === 'monthly' ? '$4.99/month' : '$49.99/year',
       features: [
         'Everything in Standard',
@@ -55,20 +55,6 @@ const Pricing = () => {
         'AI-powered study tips'
       ],
       cta: 'Upgrade Now'
-    },
-    {
-      name: 'Hornet Pro Max',
-      color: 'gold',
-      price: billingCycle === 'monthly' ? '$9.99/month' : '$89.99/year',
-      features: [
-        'Personalized study plans',
-        'Sub-tasker',
-        'Video Calls',
-        'Group white boards',
-        'Exportation to other platforms'
-      ],
-      cta: 'Coming Soon',
-      disabled: true
     }
   ];
 
