@@ -73,7 +73,7 @@
   }
   
   .save-badge {
-    background-color: #27ae60;
+    background-color: var(--primary-yellow);
     color: white;
     padding: 0.2rem 0.5rem;
     border-radius: 1rem;
@@ -119,7 +119,7 @@
   }
   
   input:checked + .slider {
-    background-color: #3498db;
+    background-color: var(--primary-yellow);
   }
   
   input:checked + .slider:before {
@@ -200,7 +200,7 @@
     content: "•";
     position: absolute;
     left: 0;
-    color: #3498db;
+    color: grey;
     font-weight: bold;
   }
   
@@ -220,10 +220,6 @@
     color: white;
   }
   
-  .plan-card.red .cta-button {
-    background-color: #e74c3c;
-    color: white;
-  }
   
   .plan-card.gold .cta-button {
     background-color: #f39c12;
