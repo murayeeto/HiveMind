@@ -386,7 +386,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                 userId: "system",
                 displayName: "System",
                 timestamp: serverTimestamp(),
-                isSystemMessage: true
+                isSystemMessage: true,
+                promptedBy: firebase.auth.currentUser.uid
             });
             
             setShowAiButtons(false);
@@ -409,7 +410,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                     userId: "system",
                     displayName: "System",
                     timestamp: serverTimestamp(),
-                    isSystemMessage: true
+                    isSystemMessage: true,
+                    promptedBy: firebase.auth.currentUser.uid
                 });
             } catch (e) {
                 console.error("Error adding error message:", e);
@@ -480,7 +482,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                     userId: "system",
                     displayName: "System",
                     timestamp: serverTimestamp(),
-                    isSystemMessage: true
+                    isSystemMessage: true,
+                    promptedBy: firebase.auth.currentUser.uid
                 });
             } catch (e) {
                 console.error("Error adding error message:", e);
@@ -544,7 +547,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                 userId: "system",
                 displayName: "System",
                 timestamp: serverTimestamp(),
-                isSystemMessage: true
+                isSystemMessage: true,
+                promptedBy: firebase.auth.currentUser.uid
             });
 
         } catch (error) {
@@ -588,8 +592,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
             {/* Messages Display with Auto-scroll */}
             <div className="messages-container" ref={messagesContainerRef}>
                 {messages.map((message) => (
-                    // Hide AI messages from non-Hornet users
-                    (message.isAiMessage && !isHornet) ? null : (
+                    // Hide AI messages from non-Hornet users and system messages from other users
+                    (message.isAiMessage && !isHornet) || (message.isSystemMessage && message.userId === "system" && message.promptedBy !== firebase.auth.currentUser?.uid) ? null : (
                         <div
                             key={message.id}
                             className={`chat-message ${message.userId === firebase.auth.currentUser?.uid ? 'user' : 'ai'}`}
