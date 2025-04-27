@@ -200,7 +200,7 @@ const Home = () => {
               <Link to="/study" className="home-feature-btn study">Get Started</Link>
             </div>
             <div className="home-feature-card">
-              <img src="https://media.istockphoto.com/id/635806922/vector/standing-month-lined-spring-desk-calendar.jpg?s=612x612&w=0&k=20&c=O8aiI0cvWkaQ1eM5Jt6j7Jxv8mUTdy4RQ6R4coellcw=" alt="A calendar" className='home-feature-card-robot-image' />
+              <img src="https://media.istockphoto.com/id/635806922/vector/standing-month-lined-spring-desk-calendar.jpg?s=612x612&w=0&k=20&c=O8aiI0cvWkaQ1eM5Jt6j7Jxv8mUTdy4RQ6R4coellcw=" alt="A calendar"/>
               <h3>View your calendar</h3>
               <Link to="/calendar" className="home-feature-btn study">Get Started</Link>
             </div>

@@ -114,7 +114,7 @@ form .form-group {
 .form-group label {
     margin-bottom: 8px;
     font-weight: 600;
-    color: #333;
+    color: #333 !important;
 }
 
 .form-group input, 
