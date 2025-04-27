@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/HiveMind/static/css/main.c7d54bfa.css",
-    "main.js": "/HiveMind/static/js/main.d523f0bc.js",
+    "main.js": "/HiveMind/static/js/main.305ea9c2.js",
     "static/js/453.35c49084.chunk.js": "/HiveMind/static/js/453.35c49084.chunk.js",
     "static/media/bee.jpg": "/HiveMind/static/media/bee.3bfce5e250749d2cc5f1.jpg",
     "index.html": "/HiveMind/index.html",
     "main.c7d54bfa.css.map": "/HiveMind/static/css/main.c7d54bfa.css.map",
-    "main.d523f0bc.js.map": "/HiveMind/static/js/main.d523f0bc.js.map",
+    "main.305ea9c2.js.map": "/HiveMind/static/js/main.305ea9c2.js.map",
     "453.35c49084.chunk.js.map": "/HiveMind/static/js/453.35c49084.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c7d54bfa.css",
-    "static/js/main.d523f0bc.js"
+    "static/js/main.305ea9c2.js"
   ]
 }
