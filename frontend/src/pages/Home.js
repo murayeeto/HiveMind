@@ -196,7 +196,7 @@ const Home = () => {
             </div>
             <div className="home-feature-card">
               <img src="https://media.istockphoto.com/id/876037616/vector/rocket-launch-vector-illustration-isolated-on-white.jpg?s=612x612&w=0&k=20&c=BnOXPbM2RyZBSLKLiCJaY_9mkK_1VQ2GuCP-HFFbAX4=" alt="A rocket" />
-              <h3>Learn by playing our games</h3>
+              <h3>Master Concepts with Study Games</h3>
               <Link to="/study" className="home-feature-btn study">Get Started</Link>
             </div>
             <div className="home-feature-card">
