@@ -16,15 +16,19 @@ const faqData = {
       items: [
         {
           question: "What is HiveMind?",
-          answer: "HiveMind is an AI-powered platform that helps students form study groups, automate scheduling, and discover personalized learning resources. Unlike manual tools, HiveMind connects you with peers, adds study sessions to your calendar automatically, and uses machine learning to recommend the best videos and textbooks"
+          answer: "HiveMind is a cutting-edge AI-powered study platform designed specifically for Delaware State University students. It combines smart study group matching, automated scheduling, and personalized learning resources to create an optimal learning environment. Our platform uses advanced algorithms to connect you with compatible study partners and provide tailored educational content."
         },
         {
           question: "How is this different from Discord or Facebook Groups?",
-          answer: "While Discord and Facebook are great for casual chats, HiveMind is designed specifically for focused learning with no manual scheduling: meetings auto-sync to your calendar when you join a group and AI-curated resources: Get recommendations tailored to your subject (e.g., STEM, languages) instead of searching endlessly."
+          answer: "Unlike general social platforms, HiveMind is purpose-built for academic success. We offer automated calendar syncing for study sessions, AI-powered resource recommendations, and a focus on academic compatibility matching. Our platform also integrates with your major and course information to provide truly relevant study connections and materials."
         },
         {
-          question: "Is HiveMind free?",
-          answer: "HiveMind offers a free plan with limited features, as well as many useful extra features for our HiveMind Pro users."
+          question: "Is HiveMind secure and private?",
+          answer: "Yes, HiveMind prioritizes your privacy and security. We use secure authentication through your school credentials, encrypt all personal data, and maintain strict privacy controls for study group information. You have full control over your visibility and sharing preferences."
+        },
+        {
+          question: "Can I use HiveMind on my mobile device?",
+          answer: "Yes, HiveMind is fully responsive and works seamlessly on all devices - smartphones, tablets, and computers. You can access all features and manage your study sessions on the go."
         }
       ]
     },
@@ -33,15 +37,19 @@ const faqData = {
       items: [
         {
           question: "How do I find study groups?",
-          answer: "You can browse available groups by department and gender. Use our search filters to find the perfect match."
+          answer: "HiveMind offers multiple ways to find study groups: browse by department, course, or major; use smart filters for scheduling preferences and group size; or let our AI matching system suggest compatible study partners based on your academic profile and study habits."
         },
         {
-          question: "Can I create my own study group?",
-          answer: "Absolutely! Both Free and Pro plan members can create groups to find new Study Buddies!"
+          question: "What makes study groups effective on HiveMind?",
+          answer: "Our platform encourages productive study sessions through structured meeting formats, integrated calendar management, and clear group objectives. You can set specific study goals, track progress, and access relevant study materials all in one place."
         },
         {
-          question: "What sizes do study groups come in?",
-          answer: "Groups range from small (2 people) to large (3-10 people). You can choose based on your preference."
+          question: "Can I create both one-on-one and group study sessions?",
+          answer: "Yes! HiveMind supports both duo sessions (2 people) and group sessions (3-10 people). You can create or join either type based on your study preferences and learning style. Each format has specialized features to enhance the study experience."
+        },
+        {
+          question: "What if I need to reschedule or cancel a session?",
+          answer: "HiveMind makes it easy to manage your study commitments. You can reschedule sessions with group consensus, set up recurring meetings, or cancel if needed. All changes automatically sync with everyone's calendars."
         }
       ]
     },
@@ -49,16 +57,20 @@ const faqData = {
       title: "Premium Features",
       items: [
         {
-          question: "What does premium offer?",
-          answer: "Pro users get access to tailored resource recommendation for textbooks and videos."
+          question: "What features are included in HiveMind Premium?",
+          answer: "Premium members get access to advanced features including: AI-powered study resource recommendations, priority matching for study groups, unlimited study session creation, advanced analytics to track your study habits, and early access to new features."
         },
         {
-          question: "How much does premium cost?",
-          answer: "We offer monthly ($4.99) and annual ($49.99) subscription options."
+          question: "How much does Premium cost?",
+          answer: "We offer flexible pricing options: Monthly ($4.99) or Annual ($49.99) subscriptions. The annual plan provides a significant discount. Special discounts are available for student organizations and study groups."
         },
         {
-          question: "How does the AI resource recommendation work?",
-          answer: "The AI uses cutting edge technology and leverages the study sessions main topic to recommend relevent videos to the overarching session."
+          question: "What makes the AI recommendations special?",
+          answer: "Our AI system analyzes your course materials, study patterns, and learning preferences to recommend highly relevant educational videos, textbooks, and study resources. It adapts to your progress and feedback to provide increasingly personalized suggestions."
+        },
+        {
+          question: "Can I try Premium features before subscribing?",
+          answer: "Yes! New users can access a 14-day free trial of Premium features. This lets you experience the full power of HiveMind's advanced features before making a commitment."
         }
       ]
     }
