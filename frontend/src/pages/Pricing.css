@@ -138,7 +138,7 @@
     min-width: 280px;
     max-width: 350px;
     border-radius: 10px;
-    padding: 2rem;
+    padding: 3rem 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     position: relative;
@@ -181,7 +181,7 @@
   .price {
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
   }
   
   .features {
@@ -205,7 +205,7 @@
   }
   
   .cta-button {
-    width: 100%;
+    width: 90%;
     padding: 1rem;
     border: none;
     border-radius: 5px;
@@ -213,6 +213,12 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 1rem !important;
+    margin-left: 5% !important;
   }
   
   .plan-card.grey .cta-button {
