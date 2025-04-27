@@ -83,7 +83,7 @@ const Home = () => {
     };
 
     fetchHomeData();
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }, []);
 
   const handleGoogleSignIn = async () => {
@@ -106,22 +106,22 @@ const Home = () => {
   return (
     <div className="home-page">
 
-    <div className='hero-content-2'>
-      <section className="hero-section" style={{backgroundColor: 'white'}}>
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1>{homeData.title}</h1>
-            <p className='hero-text-description'>{homeData.description}</p>
-            {!user && (
-              <button onClick={handleGoogleSignIn} className="google-signin">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" alt="Google" />
-                Continue with Google
-              </button>
-            )}
+      <div className='hero-content-2'>
+        <section className="hero-section" style={{ backgroundColor: 'white' }}>
+          <div className="hero-content">
+            <div className="hero-text">
+              <h1>{homeData.title}</h1>
+              <p className='hero-text-description'>{homeData.description}</p>
+              {!user && (
+                <button onClick={handleGoogleSignIn} className="google-signin">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" alt="Google" />
+                  Continue with Google
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
 
       <div className="home-content-grid">
         {user && (
@@ -152,7 +152,7 @@ const Home = () => {
                           const message = isOwner ?
                             'Are you sure you want to disband this session? This will remove all participants.' :
                             'Are you sure you want to leave this session?';
-                          
+
                           if (window.confirm(message)) {
                             if (isOwner) {
                               handleDisbandSession(session.id);
@@ -172,8 +172,8 @@ const Home = () => {
                 const now = new Date();
                 return session.participants.some(p => p.uid === user.uid) && sessionDate > now;
               }).length === 0 && (
-                <p>No future sessions scheduled</p>
-              )}
+                  <p>No future sessions scheduled</p>
+                )}
             </div>
             <Link to="/calendar" className="go-to-calendar">Go to Calendar</Link>
           </section>
@@ -189,7 +189,7 @@ const Home = () => {
             </div>
             <div className="home-feature-card">
               <div className='robot-container'>
-              <img src="https://entwickler.de/wp-content/uploads/2024/08/platform24_FSLE_OpenAI_Illustration_b.svg" alt="AI" className='home-feature-card-robot-image'/>
+                <img src="https://entwickler.de/wp-content/uploads/2024/08/platform24_FSLE_OpenAI_Illustration_b.svg" alt="AI" className='home-feature-card-robot-image' />
               </div>
               <h3>Get AI Powered Recommendations</h3>
               <Link to="/faq#ai-demo" className="home-feature-btn ai">Get Started</Link>
@@ -197,12 +197,12 @@ const Home = () => {
             <div className="home-feature-card">
               <img src="https://media.istockphoto.com/id/876037616/vector/rocket-launch-vector-illustration-isolated-on-white.jpg?s=612x612&w=0&k=20&c=BnOXPbM2RyZBSLKLiCJaY_9mkK_1VQ2GuCP-HFFbAX4=" alt="A rocket" />
               <h3>Learn by playing our games</h3>
-              <Link to="/studywithbuddy" className="home-feature-btn study">Get Started</Link>
+              <Link to="/study" className="home-feature-btn study">Get Started</Link>
             </div>
             <div className="home-feature-card">
-              <img src="https://media.istockphoto.com/id/635806922/vector/standing-month-lined-spring-desk-calendar.jpg?s=612x612&w=0&k=20&c=O8aiI0cvWkaQ1eM5Jt6j7Jxv8mUTdy4RQ6R4coellcw=" alt="A calendar" className='home-feature-card-robot-image'/>
+              <img src="https://media.istockphoto.com/id/635806922/vector/standing-month-lined-spring-desk-calendar.jpg?s=612x612&w=0&k=20&c=O8aiI0cvWkaQ1eM5Jt6j7Jxv8mUTdy4RQ6R4coellcw=" alt="A calendar" className='home-feature-card-robot-image' />
               <h3>View your calendar</h3>
-              <Link to="/faq#ai-demo" className="home-feature-btn study">Get Started</Link>
+              <Link to="/calendar" className="home-feature-btn study">Get Started</Link>
             </div>
           </div>
         </section>

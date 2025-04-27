@@ -36,6 +36,7 @@ const Calendar = () => {
     };
 
     loadEvents();
+    window.scrollTo(0, 0);
   }, [user]);
 
   const today = new Date();
