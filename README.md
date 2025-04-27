@@ -5,7 +5,7 @@ A study assistance platform with AI-powered features.
 ## Setup Instructions
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.9.16 (recommended for deployment)
 - Node.js 14 or higher
 - npm or yarn
 - Kaggle account for dataset access
@@ -108,6 +108,45 @@ cd frontend
 npm start
 ```
 The frontend will run on http://localhost:4000
+
+## Deployment on Render
+
+### Backend Deployment
+
+1. Create a new Web Service on Render
+2. Connect your GitHub repository
+3. Configure the service:
+   - Name: hornethelper-backend (or your preferred name)
+   - Environment: Python
+   - Build Command: `pip install -r backend/requirements.txt`
+   - Start Command: `gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT`
+   
+4. Add environment variables:
+   - OPENAI_API_KEY: Your OpenAI API key
+   - YOUTUBE_API_KEY: Your YouTube Data API key
+
+The backend will be deployed and accessible at your Render URL.
+
+### Environment Configuration
+
+1. After deployment, update your frontend's production environment:
+   - In `.env.production`, update REACT_APP_API_URL to your Render backend URL
+   ```
+   REACT_APP_API_URL=https://your-render-backend-url
+   ```
+
+2. Update CORS settings in backend/app.py:
+   - Add your deployed frontend URL to the CORS origins list
+
+### Deployment Checklist
+
+- [ ] Backend code pushed to GitHub
+- [ ] Python 3.9.16 selected in Render settings
+- [ ] numpy==1.24.3 and pandas==2.0.3 versions confirmed in requirements.txt
+- [ ] Environment variables set in Render dashboard
+- [ ] Frontend environment updated with new backend URL
+- [ ] CORS origins updated in backend code
+- [ ] CSV directory with textbooks.csv present in the repository
 
 ## Features
 

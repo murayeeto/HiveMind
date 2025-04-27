@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, query, where, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { FaPlus } from 'react-icons/fa';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -186,6 +186,45 @@ if (userDoc.exists()) {
           {lowScores.length > 0 ? (
             lowScores.map(score => (
               <div key={score.setId} className="improvement-item">
+                <button
+                  className="delete-score-btn"
+                  onClick={async () => {
+                    if (window.confirm('Are you sure you want to remove this set from Needs Improvement?')) {
+                      try {
+                        // Get user document
+                        const userDoc = doc(firebase.db, 'users', user.uid);
+                        const userSnap = await getDoc(userDoc);
+                        
+                        if (userSnap.exists()) {
+                          const userData = userSnap.data();
+                          const updatedTestScores = {};
+                          
+                          // Create new testScores object without the deleted score
+                          Object.entries(userData.testScores || {}).forEach(([key, value]) => {
+                            if (key !== score.setId) {
+                              updatedTestScores[key] = value;
+                            }
+                          });
+                          
+                          // Update user document with clean testScores
+                          await updateDoc(userDoc, {
+                            testScores: updatedTestScores
+                          });
+                          
+                          // Update local state
+                          setLowScores(prevScores =>
+                            prevScores.filter(s => s.setId !== score.setId)
+                          );
+                        }
+                      } catch (err) {
+                        console.error('Error removing score:', err);
+                        setError('Failed to remove score');
+                      }
+                    }
+                  }}
+                >
+                  ×
+                </button>
                 <h3>{score.setName}</h3>
                 <div className="test-score">
                   <span>Test score: {score.correctAnswers} / {score.totalCards} ({score.score.toFixed(1)}% accuracy)</span>

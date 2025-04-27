@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: hornethelper-backend
+    env: python
+    pythonVersion: 3.9.16
+    buildCommand: |
+      pip install numpy==1.24.3
+      pip install -r backend/requirements.txt
+    startCommand: gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT --timeout 120
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "true"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { FaPlus } from 'react-icons/fa';
@@ -86,6 +86,27 @@ const YourSets = () => {
 
       // Wait for all flashcards and scores to be deleted
       await Promise.all([...deleteFlashcards, ...deleteScores]);
+
+      // Clean up user's testScores
+      const userDoc = doc(firebase.db, 'users', user.uid);
+      const userSnap = await getDoc(userDoc);
+      
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const updatedTestScores = {};
+        
+        // Create new testScores object without the deleted set
+        Object.entries(userData.testScores || {}).forEach(([key, value]) => {
+          if (key !== setId) {
+            updatedTestScores[key] = value;
+          }
+        });
+        
+        // Update user document with clean testScores
+        await updateDoc(userDoc, {
+          testScores: updatedTestScores
+        });
+      }
 
       // Delete the set itself
       await deleteDoc(doc(firebase.db, 'flashcard_groups', setId));

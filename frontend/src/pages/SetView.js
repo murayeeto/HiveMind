@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import './SetView.css';
@@ -8,6 +8,10 @@ import './SetView.css';
 const SetView = () => {
   const { setId } = useParams();
   const navigate = useNavigate();
+
+  const handleStartTest = () => {
+    navigate(`/test/${setId}`);
+  };
   const { user } = useAuth();
   const [set, setSet] = useState(null);
   const [cards, setCards] = useState([]);
@@ -102,6 +106,69 @@ const SetView = () => {
     });
   };
 
+  const handleDeleteCard = async (cardId) => {
+    try {
+      // Delete the card from Firestore
+      await deleteDoc(doc(firebase.db, 'flashcards', cardId));
+      
+      // Update local state
+      setCards(prevCards => prevCards.filter(card => card.id !== cardId));
+      
+      // Update study cards if in study mode
+      setStudyCards(prevStudyCards => prevStudyCards.filter(card => card.id !== cardId));
+      
+      // Reset current card index if needed
+      if (currentCardIndex >= cards.length - 1) {
+        setCurrentCardIndex(Math.max(0, cards.length - 2));
+      }
+
+      // If this was the last card, remove the set and its test scores
+      if (cards.length === 1) {
+        // Delete the set itself
+        await deleteDoc(doc(firebase.db, 'flashcard_groups', setId));
+        
+        // Delete from test_scores collection
+        const testScoresQuery = query(
+          collection(firebase.db, 'test_scores'),
+          where('setId', '==', setId),
+          where('userId', '==', user.uid)
+        );
+        const testScoresSnapshot = await getDocs(testScoresQuery);
+        const deletePromises = testScoresSnapshot.docs.map(doc =>
+          deleteDoc(doc.ref)
+        );
+        await Promise.all(deletePromises);
+        
+        // Remove from user's testScores
+        const userDoc = doc(firebase.db, 'users', user.uid);
+        const userSnap = await getDoc(userDoc);
+        
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          
+          // Create a new testScores object without the deleted set
+          const updatedTestScores = {};
+          Object.entries(userData.testScores || {}).forEach(([key, value]) => {
+            if (key !== setId) {
+              updatedTestScores[key] = value;
+            }
+          });
+          
+          // Update user document with clean testScores object
+          await updateDoc(userDoc, {
+            testScores: updatedTestScores
+          });
+        }
+        
+        // Navigate back to sets page
+        navigate('/your-sets');
+      }
+    } catch (err) {
+      console.error('Error deleting card:', err);
+      setError('Failed to delete card');
+    }
+  };
+
   if (loading) {
     return <div className="loading">Loading set...</div>;
   }
@@ -154,9 +221,14 @@ const SetView = () => {
           <span>{cards.length} cards</span>
           <span>Created: {new Date(set.createdAt).toLocaleDateString()}</span>
         </div>
-        <button className="study-button" onClick={handleStartStudy}>
-          Start Studying
-        </button>
+        <div className="set-actions">
+          <button className="study-button" onClick={handleStartStudy}>
+            Start Studying
+          </button>
+          <button className="test-button" onClick={handleStartTest}>
+            Test
+          </button>
+        </div>
       </div>
 
       <div className="featured-card">
@@ -187,6 +259,17 @@ const SetView = () => {
       <div className="cards-grid">
         {cards.map((card, index) => (
           <div key={card.id} className="card-preview">
+            <button
+              className="delete-card-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (window.confirm('Are you sure you want to delete this card?')) {
+                  handleDeleteCard(card.id);
+                }
+              }}
+            >
+              ×
+            </button>
             <div className="card-number">#{index + 1}</div>
             <div className="card-content">
               <div className="card-side">
