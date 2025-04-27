@@ -67,15 +67,18 @@ const TestMode = () => {
     const isAnswerCorrect = userAnswer.toLowerCase().trim() === currentCard.answer.toLowerCase().trim();
     setIsCorrect(isAnswerCorrect);
     
-    if (isAnswerCorrect) {
-      setScore(score + 1);
-    }
-
-    // If this is the last question, update the final score
+    // If this is the last question
     if (currentCardIndex === cards.length - 1) {
-      finishTest();
+      // Update score and finish test
+      if (isAnswerCorrect) {
+        setScore(prevScore => prevScore + 1);
+      }
+      finishTest(isAnswerCorrect);
     } else {
-      // Otherwise, move to the next question
+      // Otherwise, update score and move to next question
+      if (isAnswerCorrect) {
+        setScore(prevScore => prevScore + 1);
+      }
       setTimeout(() => {
         setCurrentCardIndex(currentCardIndex + 1);
         setUserAnswer('');
@@ -84,15 +87,13 @@ const TestMode = () => {
     }
   };
 
-  const finishTest = async () => {
-    // Calculate final score after the last answer is checked
-    const totalCorrect = score + (isCorrect ? 1 : 0);
-    const finalScore = (totalCorrect / cards.length) * 100;
+  const finishTest = async (lastAnswerCorrect) => {
+    // Final score is already correct in the score state
+    const finalScore = (score / cards.length) * 100;
     const timestamp = new Date().toISOString();
     
     // Update the display
     setShowResult(true);
-    setScore(totalCorrect);
 
     try {
       // Save to test_scores collection
@@ -101,7 +102,7 @@ const TestMode = () => {
         userId: user.uid,
         score: finalScore,
         totalCards: cards.length,
-        correctAnswers: totalCorrect,
+        correctAnswers: score,
         completedAt: timestamp
       });
 
@@ -116,7 +117,7 @@ const TestMode = () => {
         // Update or add score for this set
         testScores[setId] = {
           score: finalScore,
-          correctAnswers: totalCorrect,
+          correctAnswers: score,
           totalCards: cards.length,
           completedAt: timestamp
         };

@@ -15,6 +15,8 @@ const SetView = () => {
   const [error, setError] = useState('');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [studyMode, setStudyMode] = useState(false);
+  const [studyCards, setStudyCards] = useState([]);
 
   useEffect(() => {
     const loadSet = async () => {
@@ -74,7 +76,30 @@ const SetView = () => {
   };
 
   const handleStartStudy = () => {
-    navigate(`/study/${setId}`);
+    setStudyCards([...cards]);
+    setCurrentCardIndex(0);
+    setStudyMode(true);
+    setIsCardFlipped(false);
+  };
+
+  const exitStudyMode = () => {
+    setStudyMode(false);
+    setStudyCards([]);
+    setCurrentCardIndex(0);
+    setIsCardFlipped(false);
+  };
+
+  const shuffleCards = () => {
+    setStudyCards(cards => {
+      const shuffled = [...cards];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      setCurrentCardIndex(0);
+      setIsCardFlipped(false);
+      return shuffled;
+    });
   };
 
   if (loading) {
@@ -91,6 +116,38 @@ const SetView = () => {
 
   return (
     <div className="set-view-page">
+      {studyMode && studyCards.length > 0 && (
+        <div className="study-mode">
+          <button className="study-close-btn" onClick={exitStudyMode}>×</button>
+          
+          <div
+            className={`study-card ${isCardFlipped ? 'flipped' : ''}`}
+            onClick={() => setIsCardFlipped(!isCardFlipped)}
+          >
+            <div className="study-card-front">
+              {studyCards[currentCardIndex].question}
+            </div>
+            <div className="study-card-back">
+              {studyCards[currentCardIndex].answer}
+            </div>
+          </div>
+
+          <div className="study-controls">
+            <button className="study-nav-btn" onClick={handlePrevCard}>
+              ←
+            </button>
+            <span className="study-counter">
+              {currentCardIndex + 1} / {studyCards.length}
+            </span>
+            <button className="study-nav-btn" onClick={handleNextCard}>
+              →
+            </button>
+            <button className="study-nav-btn study-shuffle-btn" onClick={shuffleCards}>
+              🔄 Remix
+            </button>
+          </div>
+        </div>
+      )}
       <div className="set-header">
         <h1>{set.name}</h1>
         <div className="set-stats">

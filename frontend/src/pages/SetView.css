@@ -216,3 +216,103 @@
     font-size: 1.2rem;
   }
 }
+
+/* Study Mode */
+.study-mode {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  z-index: 1000;
+}
+
+.study-card {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin-bottom: 2rem;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.study-card-front,
+.study-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.study-card-back {
+  transform: rotateX(180deg);
+}
+
+.study-card.flipped .study-card-front {
+  transform: rotateX(-180deg);
+}
+
+.study-card.flipped .study-card-back {
+  transform: rotateX(0);
+}
+
+.study-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.study-nav-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: #FFD700;
+  color: #222;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.study-nav-btn:hover {
+  background: #FFC000;
+}
+
+.study-shuffle-btn {
+  background: #222;
+  color: white;
+}
+
+.study-shuffle-btn:hover {
+  background: #444;
+}
+
+.study-counter {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0 1rem;
+}
+
+.study-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
