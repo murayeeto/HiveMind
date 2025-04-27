@@ -19,7 +19,7 @@ import {
     writeBatch
 } from 'firebase/firestore';
 import firebase from '../firebase';
-import dsuCampusLocations from '../data/dsuCampusLocations';
+import { colleges, getLocationsByCollege } from '../data/campusLocations';
 import departmentsAndMajors from '../data/departmentsAndMajors';
 import Calendar from './Calendar';
 import { useSessionHandlers, addToCalendar } from '../utils/sessionHandlers';
@@ -69,6 +69,7 @@ function HomeScreen({ setScreen }) {
 function DuoSessions({ setScreen }) {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [selectedCollege, setSelectedCollege] = useState("dsu");
     const [dateTime, setDateTime] = useState("");
     const [location, setLocation] = useState("");
     const [selectedCourse, setSelectedCourse] = useState("");
@@ -244,6 +245,20 @@ function DuoSessions({ setScreen }) {
                         handleSubmit(e);
                     }}>
                         <div className="form-group">
+                            <label>College</label>
+                            <select
+                                value={selectedCollege}
+                                onChange={(e) => setSelectedCollege(e.target.value)}
+                                required
+                            >
+                                {colleges.map(college => (
+                                    <option key={college.id} value={college.id}>
+                                        {college.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
                             <label>Course</label>
                             <input
                                 type="text"
@@ -285,7 +300,7 @@ function DuoSessions({ setScreen }) {
                                 required
                             >
                                 <option value="">Select location</option>
-                                {dsuCampusLocations.map(loc => (
+                                {getLocationsByCollege(selectedCollege).map(loc => (
                                     <option key={loc.name} value={loc.name}>
                                         {loc.name}
                                     </option>
@@ -578,6 +593,7 @@ function DuoSessions({ setScreen }) {
 function GroupSessions({ setScreen }) {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [selectedCollege, setSelectedCollege] = useState("dsu");
     const [dateTime, setDateTime] = useState("");
     const [location, setLocation] = useState("");
     const [selectedCourse, setSelectedCourse] = useState("");
@@ -792,6 +808,20 @@ function GroupSessions({ setScreen }) {
                         handleSubmit(e);
                     }}>
                         <div className="form-group">
+                            <label>College</label>
+                            <select
+                                value={selectedCollege}
+                                onChange={(e) => setSelectedCollege(e.target.value)}
+                                required
+                            >
+                                {colleges.map(college => (
+                                    <option key={college.id} value={college.id}>
+                                        {college.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
                             <label>Course</label>
                             <input
                                 type="text"
@@ -833,7 +863,7 @@ function GroupSessions({ setScreen }) {
                                 required
                             >
                                 <option value="">Select location</option>
-                                {dsuCampusLocations.map(loc => (
+                                {getLocationsByCollege(selectedCollege).map(loc => (
                                     <option key={loc.name} value={loc.name}>
                                         {loc.name}
                                     </option>
