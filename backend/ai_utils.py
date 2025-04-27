@@ -7,7 +7,7 @@ Requires API keys to be set in .env file:
 """
 
 import os
-from openai import OpenAI
+import openai
 import pandas as pd
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
@@ -18,9 +18,9 @@ load_dotenv()
 # Path to the textbooks dataset
 TEXTBOOKS_CSV_PATH = './backend/csv/textbooks.csv'
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-if not os.getenv('OPENAI_API_KEY'):
+# Initialize OpenAI with API key
+openai.api_key = os.getenv('OPENAI_API_KEY')
+if not openai.api_key:
     print("Warning: OPENAI_API_KEY not found in environment variables")
 
 # Set up YouTube API client for video recommendations
@@ -48,7 +48,7 @@ def get_ai_response(prompt):
             
         print("Attempting to get AI response for prompt:", prompt)
         # Create the chat completion
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a kind and supportive teacher who helps students succeed. Keep responses concise (3-4 sentences max). Be clear, encouraging, and practical. Use simple formatting - no markdown or special characters. Focus on giving actionable advice and clear explanations and also try not give the user the direct answer they are seeking rather seek to guide them to the correct answer."},
@@ -59,7 +59,7 @@ def get_ai_response(prompt):
         )
         
         # Extract the response text
-        return response.choices[0].message.content.strip()
+        return response.choices[0].message['content'].strip()
     except Exception as e:
         print(f"Error generating AI response: {str(e)}")
         return "I apologize, but I'm having trouble processing your request right now. Please try again later."
@@ -208,7 +208,7 @@ def generate_flashcards(course):
         print(f"Generating flashcards for course: {course}")
         
         # Create the chat completion with specific instructions
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an expert in creating educational flashcards. Generate 5 question-answer pairs for studying. Focus on key concepts, definitions, and important facts. Keep questions clear and concise. Answers should be brief but comprehensive."},
@@ -219,7 +219,7 @@ def generate_flashcards(course):
         )
         
         # Extract and parse the response
-        content = response.choices[0].message.content.strip()
+        content = response.choices[0].message['content'].strip()
         # Convert string representation of list to actual list
         import ast
         flashcards = ast.literal_eval(content)
