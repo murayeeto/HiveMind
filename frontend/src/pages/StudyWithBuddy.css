@@ -158,14 +158,19 @@ form .form-group {
 }
 
 .action-btn {
-    background-color: #00A7E3;
-    color: white;
+    background-color: black;
+    color: var(--primary-yellow);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     flex: 1;
+}
+
+.action-btn:hover {
+    background-color: var(--primary-yellow);
+    color: black;
 }
 
 .filters {
