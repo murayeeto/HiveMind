@@ -35,7 +35,7 @@ function App() {
           <Navbar />
           <div className="container">
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route path="/signin" element={<Login />} />
               <Route
                 path="/"
                 element={
@@ -127,7 +127,9 @@ function App() {
               <Route
                 path="/studysets"
                 element={
-                  <StudyPage />
+                  <PrivateRoute>
+                    <StudyPage />
+                  </PrivateRoute>
                 }
               />
               <Route

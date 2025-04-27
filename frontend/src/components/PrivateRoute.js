@@ -1,9 +1,13 @@
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
   
-  // Allow viewing without authentication and without major
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+  
   return children;
 };
 
