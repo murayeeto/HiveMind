@@ -172,15 +172,25 @@ function DuoSessions({ setScreen }) {
     }, []);
 
     useEffect(() => {
-        if (showFiltered && selectedDepartment) {
-            const filtered = sessions.filter(session =>
-                departmentsAndMajors[selectedDepartment]?.includes(session.major)
-            );
-            setFilteredSessions(filtered);
+        let filtered = sessions;
+        
+        if (showFiltered) {
+            if (selectedDepartment) {
+                filtered = filtered.filter(session =>
+                    departmentsAndMajors[selectedDepartment]?.includes(session.major)
+                );
+            }
+            if (gender) {
+                filtered = filtered.filter(session =>
+                    session.userGender === gender
+                );
+            }
         } else {
-            setFilteredSessions(sessions);
+            filtered = sessions;
         }
-    }, [selectedDepartment, sessions, showFiltered]);
+        
+        setFilteredSessions(filtered);
+    }, [selectedDepartment, gender, sessions, showFiltered]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
