@@ -8,7 +8,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from functools import wraps
 from ai_utils import get_ai_response, get_video_recommendation, get_textbook_recommendation
-
+#test
 app = Flask(__name__)
 
 # Configure CORS to allow requests from both local and deployed frontend
