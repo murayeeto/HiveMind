@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, where, doc, getDoc, addDoc, updateDoc } from 'firebase/firestore';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { calculateTestPoints, updateUserPoints } from '../utils/pointsSystem';
 import './TestMode.css';
 
 const TestMode = () => {
@@ -16,6 +17,7 @@ const TestMode = () => {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [earnedPoints, setEarnedPoints] = useState(0);
   const [error, setError] = useState('');
   const [isCorrect, setIsCorrect] = useState(null);
 
@@ -92,6 +94,10 @@ const TestMode = () => {
     const finalScore = (score / cards.length) * 100;
     const timestamp = new Date().toISOString();
     
+    // Calculate points earned
+    const points = calculateTestPoints(score, cards.length);
+    setEarnedPoints(points);
+    
     // Update the display
     setShowResult(true);
 
@@ -103,6 +109,7 @@ const TestMode = () => {
         score: finalScore,
         totalCards: cards.length,
         correctAnswers: score,
+        points: points,
         completedAt: timestamp
       });
 
@@ -119,8 +126,12 @@ const TestMode = () => {
           score: finalScore,
           correctAnswers: score,
           totalCards: cards.length,
+          points: points,
           completedAt: timestamp
         };
+
+        // Update user's points
+        await updateUserPoints(user, points);
 
         // Update user document
         await updateDoc(userDoc, {
@@ -153,7 +164,8 @@ const TestMode = () => {
           <h2>Test Complete!</h2>
           <div className="final-score">Score: {finalScore.toFixed(1)}%</div>
           <div className="score-details">
-            Correct Answers: {score} / {cards.length}
+            <p>Correct Answers: {score} / {cards.length}</p>
+            <p className="points-earned">Points earned: {earnedPoints}</p>
           </div>
           <div className="test-actions">
             <button onClick={() => navigate('/your-sets')}>Back to Sets</button>

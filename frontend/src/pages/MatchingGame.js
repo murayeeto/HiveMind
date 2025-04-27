@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, where, doc, getDoc, addDoc } from 'firebase/firestore';
 import firebase from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { calculateGamePoints, updateUserPoints } from '../utils/pointsSystem';
 import './MatchingGame.css';
 
 const MatchingGame = () => {
@@ -14,6 +15,7 @@ const MatchingGame = () => {
   const [flippedCards, setFlippedCards] = useState([]);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [moves, setMoves] = useState(0);
+  const [earnedPoints, setEarnedPoints] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -117,15 +119,24 @@ const MatchingGame = () => {
         // Check if game is completed
         if (matchedPairs.length + 1 === cards.length / 2) {
           setGameCompleted(true);
+          
+          // Calculate points earned
+          const points = calculateGamePoints(timer, moves);
+          setEarnedPoints(points);
+          
           // Save score to Firebase
           await addDoc(collection(firebase.db, 'game_scores'), {
             setId,
             gameType: 'matching',
             time: timer,
             moves: moves,
+            points: points,
             userId: user.uid,
             completedAt: new Date().toISOString()
           });
+          
+          // Update user's total points
+          await updateUserPoints(user, points);
         }
       } else {
         setTimeout(() => {
@@ -149,6 +160,7 @@ const MatchingGame = () => {
     setTimer(0);
     setGameStarted(false);
     setGameCompleted(false);
+    setEarnedPoints(0);
   };
 
   if (loading) {
@@ -203,6 +215,7 @@ const MatchingGame = () => {
         <div className="game-completed">
           <h2>Congratulations!</h2>
           <p>You completed the game in {formatTime(timer)} with {moves} moves!</p>
+          <p className="points-earned">Points earned: {earnedPoints}</p>
           <div className="game-actions">
             <button onClick={restartGame}>Play Again</button>
             <button onClick={() => navigate('/games')}>Back to Games</button>

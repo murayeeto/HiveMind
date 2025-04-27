@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
+import firebase from '../firebase';
 import departmentsAndMajors from '../data/departmentsAndMajors';
 import './Account.css';
 
@@ -10,6 +12,7 @@ const DEFAULT_PROFILE_PIC = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blan
 
 const Account = () => {
   const { user, updateMajor, updateDisplayName, updateProfilePicture, updateGender, upgradeToHornet, downgradeFromHornet } = useAuth();
+  const [points, setPoints] = useState(0);
   const [major, setMajor] = useState(user?.major || '');
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [gender, setGender] = useState(user?.gender || '');
@@ -100,6 +103,19 @@ const Account = () => {
   };
 
   // Update local state when user data changes
+  // Fetch user's points
+  useEffect(() => {
+    const fetchPoints = async () => {
+      if (user) {
+        const userDoc = await getDoc(doc(firebase.db, 'users', user.uid));
+        if (userDoc.exists()) {
+          setPoints(userDoc.data().points || 0);
+        }
+      }
+    };
+    fetchPoints();
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       setMajor(user.major || '');
@@ -305,6 +321,13 @@ const Account = () => {
         <div className="account-section">
           <h2>Account Details</h2>
           <div className="profile-info">
+            <div className="info-group">
+              <label>Points</label>
+              <div className="info-display">
+                <p className="points-display">🏆 {points} points</p>
+              </div>
+            </div>
+
             <div className="info-group">
               <label>Account Status</label>
               <div className="info-display">
