@@ -16,10 +16,14 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize services with explicit bucket URL
+// Initialize services
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app, process.env.REACT_APP_FIREBASE_STORAGE_BUCKET);
+const storage = getStorage(app);
+
+// Configure storage with CORS settings
+storage.maxOperationRetryTime = 10000;
+storage.maxUploadRetryTime = 10000;
 
 // Export initialized app and services
 const firebase = {

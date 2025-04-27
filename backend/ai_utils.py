@@ -184,3 +184,48 @@ def get_textbook_recommendation(major):
     except Exception as e:
         print(f"Error getting textbook recommendation for course '{major}': {str(e)}")
         return None
+
+def generate_flashcards(course):
+    """
+    Generate flashcards for a specific course using OpenAI's ChatGPT
+    
+    Args:
+        course (str): Course name or topic to generate flashcards for
+        
+    Returns:
+        list: List of dictionaries containing flashcard information:
+            - question: The question or front of the card
+            - answer: The answer or back of the card
+            
+    Note:
+        Uses GPT-3.5-turbo to generate 5 relevant flashcards for studying
+    """
+    try:
+        if not openai.api_key:
+            print("Error: OpenAI API key not found")
+            return None
+            
+        print(f"Generating flashcards for course: {course}")
+        
+        # Create the chat completion with specific instructions
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an expert in creating educational flashcards. Generate 5 question-answer pairs for studying. Focus on key concepts, definitions, and important facts. Keep questions clear and concise. Answers should be brief but comprehensive."},
+                {"role": "user", "content": f"Create 5 flashcards for studying {course}. Return them in this format: [{{\"question\": \"Q1\", \"answer\": \"A1\"}}, {{\"question\": \"Q2\", \"answer\": \"A2\"}}]"}
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
+        
+        # Extract and parse the response
+        content = response.choices[0].message['content'].strip()
+        # Convert string representation of list to actual list
+        import ast
+        flashcards = ast.literal_eval(content)
+        
+        return flashcards
+        
+    except Exception as e:
+        print(f"Error generating flashcards: {str(e)}")
+        return None

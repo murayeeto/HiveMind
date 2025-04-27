@@ -7,7 +7,7 @@ Uses OpenAI for natural language processing and YouTube API for video search.
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from functools import wraps
-from ai_utils import get_ai_response, get_video_recommendation, get_textbook_recommendation
+from ai_utils import get_ai_response, get_video_recommendation, get_textbook_recommendation, generate_flashcards
 #test
 app = Flask(__name__)
 
@@ -18,9 +18,11 @@ CORS(app, resources={
             "http://localhost:4000",
             "https://localhost:4000",
             "https://hivemind-app.firebaseapp.com",
-            "https://hivemind-app.web.app"
+            "https://hivemind-app.web.app",
+            "https://murayeeto.github.io",
+            "https://murayeeto.github.io/HiveMind/#/"
         ],
-        "methods": ["GET", "POST", "OPTIONS"],
+        "methods": ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "expose_headers": ["Content-Type"],
         "supports_credentials": True
@@ -121,6 +123,36 @@ def recommend_textbook():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/generate-flashcards', methods=['POST'])
+def create_flashcards():
+    """
+    Flashcard Generation Endpoint
+    Generates a set of flashcards based on the provided course/topic.
+    
+    Request body:
+    {
+        "course": "Course name or topic"
+    }
+    
+    Returns:
+    - 200: JSON array of flashcards with questions and answers
+    - 400: If course is missing
+    - 500: For server errors
+    """
+    try:
+        data = request.get_json()
+        if not data or 'course' not in data:
+            return jsonify({"error": "Course is required"}), 400
+            
+        course = data['course']
+        flashcards = generate_flashcards(course)
+        
+        if flashcards:
+            return jsonify(flashcards)
+        return jsonify({"error": "Failed to generate flashcards"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Global Error Handlers
 
 @app.errorhandler(404)
@@ -134,4 +166,4 @@ def server_error(error):
     return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(host='0.0.0.0', debug=True, port=8000)

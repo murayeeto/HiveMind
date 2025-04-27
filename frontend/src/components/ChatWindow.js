@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, getDoc } from 'firebase/firestore';
-import { FaRobot } from 'react-icons/fa';
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, getDoc, getDocs, where } from 'firebase/firestore';
+import { FaRobot, FaShareAlt } from 'react-icons/fa';
 import axios from 'axios';
 import firebase from '../firebase';
 import './ChatWindow.css';
@@ -15,6 +15,9 @@ import './ChatWindow.css';
  * @param {boolean} isHornet - Indicates if user has AI assistant privileges
  */
 const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
+    // Check if this is a group session based on URL
+    const isGroupSession = window.location.pathname.includes('group');
+    
     // State management for chat functionality
     const [messages, setMessages] = useState([]); // Chat message history
     const [newMessage, setNewMessage] = useState(''); // Current message input
@@ -22,6 +25,8 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
     const [charCount, setCharCount] = useState(0); // Message length counter
     const [loading, setLoading] = useState(false); // Loading state for AI operations
     const [showRecommendModal, setShowRecommendModal] = useState(false); // Modal for recommendation type
+    const [showShareModal, setShowShareModal] = useState(false); // Modal for sharing flashcard sets
+    const [flashcardSets, setFlashcardSets] = useState([]); // User's flashcard sets
     const messagesContainerRef = useRef(null); // Reference for auto-scrolling
     const MAX_CHARS = 400; // Maximum characters per message
     
@@ -337,6 +342,216 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
         }
     };
 
+    /**
+     * Handles generating AI flashcards for the current course
+     */
+    const handleGenerateFlashcards = async () => {
+        setLoading(true);
+        try {
+            const { sessionData, messagesRef } = await getSessionData();
+
+            // Get AI to generate flashcards
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/generate-flashcards`, {
+                course: sessionData.course
+            });
+            
+            const flashcards = response.data;
+            
+            // Create a new flashcard set
+            const newSet = {
+                name: `AI Generated - ${sessionData.course}`,
+                userId: firebase.auth.currentUser.uid,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add the set to the database
+            const setRef = await addDoc(collection(firebase.db, 'flashcard_groups'), newSet);
+            
+            // Add all flashcards to the set
+            const addFlashcardPromises = flashcards.map(card =>
+                addDoc(collection(firebase.db, 'flashcards'), {
+                    question: card.question,
+                    answer: card.answer,
+                    userId: firebase.auth.currentUser.uid,
+                    groupId: setRef.id,
+                    createdAt: new Date().toISOString()
+                })
+            );
+            
+            await Promise.all(addFlashcardPromises);
+            
+            // Add success message to chat
+            await addDoc(messagesRef, {
+                text: `Successfully generated a new flashcard set "${newSet.name}" with ${flashcards.length} cards! You can find it in your study sets.`,
+                userId: "system",
+                displayName: "System",
+                timestamp: serverTimestamp(),
+                isSystemMessage: true
+            });
+            
+            setShowAiButtons(false);
+        } catch (error) {
+            console.error("Error generating flashcards:", error);
+            
+            // Add error message to chat
+            try {
+                // Try group sessions first
+                let sessionRef = doc(firebase.db, 'groupSessions', sessionId);
+                let sessionDoc = await getDoc(sessionRef);
+                
+                if (!sessionDoc.exists()) {
+                    sessionRef = doc(firebase.db, 'sessions', sessionId);
+                }
+                
+                const messagesRef = collection(sessionRef, 'messages');
+                await addDoc(messagesRef, {
+                    text: "Failed to generate flashcards. Please try again.",
+                    userId: "system",
+                    displayName: "System",
+                    timestamp: serverTimestamp(),
+                    isSystemMessage: true
+                });
+            } catch (e) {
+                console.error("Error adding error message:", e);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Load user's flashcard sets when share modal opens
+    useEffect(() => {
+        if (showShareModal && firebase.auth.currentUser) {
+            const loadSets = async () => {
+                try {
+                    const setsQuery = query(
+                        collection(firebase.db, 'flashcard_groups'),
+                        where('userId', '==', firebase.auth.currentUser.uid)
+                    );
+                    const setsSnapshot = await getDocs(setsQuery);
+                    const loadedSets = setsSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    setFlashcardSets(loadedSets);
+                } catch (err) {
+                    console.error('Error loading flashcard sets:', err);
+                }
+            };
+            loadSets();
+        }
+    }, [showShareModal]);
+
+    // Handle sharing a flashcard set
+    const handleShareSet = async (setId, setName) => {
+        try {
+            // Try group session first
+            let sessionRef = doc(firebase.db, 'groupSessions', sessionId);
+            let sessionDoc = await getDoc(sessionRef);
+            
+            // If not found in group sessions, try regular sessions
+            if (!sessionDoc.exists()) {
+                sessionRef = doc(firebase.db, 'sessions', sessionId);
+                sessionDoc = await getDoc(sessionRef);
+                
+                if (!sessionDoc.exists()) {
+                    console.error('Session not found in either collection');
+                    return;
+                }
+            }
+
+            const messagesRef = collection(sessionRef, 'messages');
+            await addDoc(messagesRef, {
+                text: `FLASHCARD_SHARE:${setId}:${setName}`,
+                userId: firebase.auth.currentUser.uid,
+                displayName: firebase.auth.currentUser.displayName,
+                photoURL: firebase.auth.currentUser.photoURL,
+                timestamp: serverTimestamp(),
+                isFlashcardShare: true
+            });
+            setShowShareModal(false);
+        } catch (error) {
+            console.error("Error sharing flashcard set:", error);
+            // Add error message to chat
+            try {
+                const messagesRef = collection(doc(firebase.db, isGroupSession ? 'groupSessions' : 'sessions', sessionId), 'messages');
+                await addDoc(messagesRef, {
+                    text: "Failed to share flashcard set. Please try again.",
+                    userId: "system",
+                    displayName: "System",
+                    timestamp: serverTimestamp(),
+                    isSystemMessage: true
+                });
+            } catch (e) {
+                console.error("Error adding error message:", e);
+            }
+            console.error("Error sharing flashcard set:", error);
+        }
+    };
+
+    // Handle accepting a shared flashcard set
+    const handleAcceptSet = async (setId, originalMessage) => {
+        try {
+            // Get the original flashcard set
+            const setDoc = await getDoc(doc(firebase.db, 'flashcard_groups', setId));
+            if (!setDoc.exists()) return;
+
+            const setData = setDoc.data();
+            
+            // Create a new set for the accepting user
+            const newSet = {
+                name: setData.name,
+                userId: firebase.auth.currentUser.uid,
+                createdAt: new Date().toISOString(),
+                sharedFrom: originalMessage.userId
+            };
+
+            // Add the new set
+            const newSetRef = await addDoc(collection(firebase.db, 'flashcard_groups'), newSet);
+
+            // Get all flashcards from original set
+            const flashcardsQuery = query(
+                collection(firebase.db, 'flashcards'),
+                where('groupId', '==', setId)
+            );
+            const flashcardsSnapshot = await getDocs(flashcardsQuery);
+
+            // Copy all flashcards to new set
+            const copyPromises = flashcardsSnapshot.docs.map(flashcardDoc => {
+                const flashcardData = flashcardDoc.data();
+                return addDoc(collection(firebase.db, 'flashcards'), {
+                    ...flashcardData,
+                    userId: firebase.auth.currentUser.uid,
+                    groupId: newSetRef.id,
+                    createdAt: new Date().toISOString()
+                });
+            });
+
+            await Promise.all(copyPromises);
+
+            // Add confirmation message to chat
+            // Try group sessions first
+            let sessionRef = doc(firebase.db, 'groupSessions', sessionId);
+            let sessionDoc = await getDoc(sessionRef);
+            
+            if (!sessionDoc.exists()) {
+                sessionRef = doc(firebase.db, 'sessions', sessionId);
+            }
+            
+            const messagesRef = collection(sessionRef, 'messages');
+            await addDoc(messagesRef, {
+                text: `Successfully added "${setData.name}" to your flashcard sets!`,
+                userId: "system",
+                displayName: "System",
+                timestamp: serverTimestamp(),
+                isSystemMessage: true
+            });
+
+        } catch (error) {
+            console.error("Error accepting flashcard set:", error);
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -345,7 +560,16 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
             <div className="chat-header">
                 <h3>The Hive</h3>
                 <div className="header-controls">
-                    {/* AI Assistant button only shown to users with Hornet privileges */}
+                    <FaShareAlt
+                        className="share-icon"
+                        style={{
+                            fontSize: '20px',
+                            marginRight: '10px',
+                            color: 'white',
+                            cursor: 'pointer'
+                        }}
+                        onClick={() => setShowShareModal(true)}
+                    />
                     {isHornet && (
                         <FaRobot
                             className="robot-icon"
@@ -374,8 +598,26 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                                 <span className="message-sender">
                                     {message.userId === firebase.auth.currentUser?.uid ? 'You' : message.displayName}
                                 </span>
-                                {/* Support for both HTML and plain text messages */}
-                                {message.isHtml ? (
+                                {message.isFlashcardShare ? (
+                                    <div className="flashcard-share">
+                                        {(() => {
+                                            const [prefix, setId, setName] = message.text.split(':');
+                                            return (
+                                                <>
+                                                    <p>Shared flashcard set: {setName}</p>
+                                                    {message.userId !== firebase.auth.currentUser?.uid && (
+                                                        <button
+                                                            className="accept-button"
+                                                            onClick={() => handleAcceptSet(setId, message)}
+                                                        >
+                                                            Accept Set
+                                                        </button>
+                                                    )}
+                                                </>
+                                            );
+                                        })()}
+                                    </div>
+                                ) : message.isHtml ? (
                                     <p dangerouslySetInnerHTML={{ __html: message.text }} />
                                 ) : (
                                     <p>{message.text}</p>
@@ -414,6 +656,13 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                         >
                             Ask
                         </button>
+                        <button
+                            onClick={handleGenerateFlashcards}
+                            className="ai-button generate"
+                            disabled={loading}
+                        >
+                            Generate Flashcards
+                        </button>
                     </div>
                 )}
                 <form onSubmit={handleSubmit} className="message-form">
@@ -450,6 +699,38 @@ const ChatWindow = ({ sessionId, isOpen, onClose, isHornet }) => {
                     </button>
                 </form>
             </div>
+
+            {/* Share Flashcard Sets Modal */}
+            {showShareModal && (
+                <div className="recommendation-modal">
+                    <div className="recommendation-modal-content">
+                        <h3>Share Flashcard Set</h3>
+                        <div className="flashcard-sets-list">
+                            {flashcardSets.map(set => (
+                                <button
+                                    key={set.id}
+                                    onClick={() => handleShareSet(set.id, set.name)}
+                                    className="share-set-button"
+                                    disabled={loading}
+                                >
+                                    {set.name}
+                                </button>
+                            ))}
+                            {flashcardSets.length === 0 && (
+                                <p style={{ textAlign: 'center', color: '#666' }}>
+                                    No flashcard sets available
+                                </p>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => setShowShareModal(false)}
+                            className="close-modal-button"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Recommendation Type Modal */}
             {showRecommendModal && (
